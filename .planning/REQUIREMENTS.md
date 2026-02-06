@@ -17,11 +17,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Emotion Detection
 
-- [ ] **EMO-01**: User's face is detected in real-time via MediaPipe FaceLandmarker
-- [ ] **EMO-02**: User's emotion is classified into one of 5 categories: happy, sad, angry, surprised, neutral
-- [ ] **EMO-03**: Emotion transitions are smooth (particles morph between states over ~1-2 seconds, no jarring snaps)
-- [ ] **EMO-04**: Emotion intensity scales with expression strength (wider smile = more intense happy particles)
-- [ ] **EMO-05**: When no face is detected, particles default to calm neutral state
+- [x] **EMO-01**: User's face is detected in real-time via MediaPipe FaceLandmarker
+- [x] **EMO-02**: User's emotion is classified into one of 5 categories: happy, sad, angry, surprised, neutral
+- [x] **EMO-03**: Emotion transitions are smooth (particles morph between states over ~1-2 seconds, no jarring snaps)
+- [x] **EMO-04**: Emotion intensity scales with expression strength (wider smile = more intense happy particles)
+- [x] **EMO-05**: When no face is detected, particles default to calm neutral state
 
 ### Particle System
 
@@ -90,11 +90,11 @@ Deferred to future release. Tracked but not in current roadmap.
 | CAM-03 | Phase 1 | Complete |
 | CAM-04 | Phase 1 | Complete |
 | CAM-05 | Phase 1 | Complete |
-| EMO-01 | Phase 2 | Pending |
-| EMO-02 | Phase 2 | Pending |
-| EMO-03 | Phase 2 | Pending |
-| EMO-04 | Phase 2 | Pending |
-| EMO-05 | Phase 2 | Pending |
+| EMO-01 | Phase 2 | Complete |
+| EMO-02 | Phase 2 | Complete |
+| EMO-03 | Phase 2 | Complete |
+| EMO-04 | Phase 2 | Complete |
+| EMO-05 | Phase 2 | Complete |
 | PRT-01 | Phase 3 | Pending |
 | PRT-02 | Phase 3 | Pending |
 | PRT-03 | Phase 3 | Pending |

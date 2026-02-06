@@ -5,34 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-02-06)
 
 **Core value:** The webcam feed must detect emotions and render reactive particles in real-time with fluid, visually impressive results.
-**Current focus:** Phase 2 - Emotion Detection
+**Current focus:** Phase 2 complete — ready for Phase 3
 
 ## Current Position
 
-Phase: 2 of 5 (Emotion Detection)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-06 -- Completed 02-01-PLAN.md (ML pipeline core: FaceDetector + EmotionClassifier)
+Phase: 2 of 5 (Emotion Detection) — COMPLETE
+Plan: 2 of 2 in current phase
+Status: Complete — verified ✓
+Last activity: 2026-02-06 -- Phase 2 verified (10/10 must-haves passed)
 
-Progress: [####..........] 29%
+Progress: [########......] 43%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: ~5 minutes
-- Total execution time: ~21 minutes
+- Total plans completed: 5
+- Average duration: ~6 minutes
+- Total execution time: ~29 minutes
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Camera & Foundation | 3/3 | ~19 min | ~6 min |
-| 2. Emotion Detection | 1/2 | ~2 min | ~2 min |
+| 2. Emotion Detection | 2/2 | ~10 min | ~5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (~5 min), 01-02 (~2 min), 01-03 (~12 min), 02-01 (~2 min)
-- Trend: 02-01 fast -- no new packages, pure TypeScript additions
+- Last 5 plans: 01-02 (~2 min), 01-03 (~12 min), 02-01 (~2 min), 02-02 (~8 min)
+- Trend: Phase 2 averaged 5 min/plan including human verification checkpoint
 
 *Updated after each plan completion*
 
@@ -56,6 +56,10 @@ Recent decisions affecting current work:
 - [01-03]: Parallel camera + model loading via Promise.all for faster startup
 - [02-01]: All emotion weights/thresholds in constants.ts (single source of truth for tuning)
 - [02-01]: EmotionClassifier is stateless -- smoothing deferred to EmotionState in Plan 02
+- [02-02]: Stale frames (null from FaceDetector) must be skipped, not treated as face-lost
+- [02-02]: NEUTRAL_SUPPRESSION_FACTOR tuned from 1.5 to 2.5 after live testing
+- [02-02]: Angry/sad disambiguation uses chin crumple (mouthShrugLower) threshold, not noseSneer
+- [02-02]: browDown shared between angry and sad weights; secondary signals differentiate
 
 ### Pending Todos
 
@@ -67,10 +71,10 @@ None.
 - Safari-specific WebGL/MediaPipe behavior may need investigation in Phase 5
 - GLSL techniques for organic/fluid particle aesthetic may need research during Phase 3
 - COOP/COEP headers may be needed if MediaPipe requires SharedArrayBuffer (not needed so far -- models loaded without issue)
-- Emotion weights may need tuning after live webcam testing in Plan 02 checkpoint
+- Emotion weights may benefit from further tuning with more users in Phase 5
 
 ## Session Continuity
 
 Last session: 2026-02-06
-Stopped at: Completed 02-01-PLAN.md, ready for 02-02-PLAN.md
+Stopped at: Phase 2 complete, ready for Phase 3 planning
 Resume file: None
