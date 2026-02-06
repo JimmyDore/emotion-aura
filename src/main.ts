@@ -7,6 +7,11 @@ import { PermissionScreen } from './ui/PermissionScreen.ts';
 import { LoadingScreen } from './ui/LoadingScreen.ts';
 import { ErrorScreen } from './ui/ErrorScreen.ts';
 import { MobileGate } from './ui/MobileGate.ts';
+import { FaceDetector } from './ml/FaceDetector.ts';
+import { EmotionClassifier } from './ml/EmotionClassifier.ts';
+import { EmotionState } from './state/EmotionState.ts';
+import { EmotionOverlay } from './ui/EmotionOverlay.ts';
+import { WASM_CDN } from './core/constants.ts';
 import type { CameraError } from './core/types.ts';
 
 /**
@@ -21,6 +26,8 @@ import type { CameraError } from './core/types.ts';
 
 let sceneManager: SceneManager | null = null;
 let cameraManager: CameraManager | null = null;
+let faceDetector: FaceDetector | null = null;
+let emotionOverlay: EmotionOverlay | null = null;
 let statsInstance: { dom: HTMLElement; begin: () => void; end: () => void } | null = null;
 let rafId = 0;
 
@@ -96,6 +103,10 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
 
   loadingScreen.hide();
 
+  // Initialize face detection from pre-downloaded model
+  faceDetector = new FaceDetector();
+  await faceDetector.init(modelLoader.getFaceModelBuffer()!, WASM_CDN);
+
   // ── d. LIVE EXPERIENCE ───────────────────────────────────────────
   const video = document.getElementById('webcam') as HTMLVideoElement | null;
   if (!video) {
@@ -113,6 +124,11 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
 
   sceneManager = new SceneManager(canvas);
 
+  // Emotion detection pipeline
+  const emotionClassifier = new EmotionClassifier();
+  const emotionState = new EmotionState();
+  emotionOverlay = new EmotionOverlay(app);
+
   // Dynamic import for stats.js (dev tool; avoids verbatimModuleSyntax conflict)
   const StatsModule = await import('stats.js');
   const Stats = StatsModule.default;
@@ -124,9 +140,23 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
   document.body.appendChild(stats.dom);
   statsInstance = stats;
 
-  // Render loop
+  // Render loop with emotion detection pipeline
   function animate(): void {
     stats.begin();
+
+    // Run face detection (skips if video frame unchanged)
+    const result = faceDetector!.detect(video!);
+
+    if (result && result.faceBlendshapes && result.faceBlendshapes.length > 0) {
+      const rawScores = emotionClassifier.classify(result.faceBlendshapes[0].categories);
+      emotionState.update(rawScores);
+    } else {
+      emotionState.decayToNeutral();
+    }
+
+    // Update overlay every frame (reads smoothed state)
+    emotionOverlay!.update(emotionState.getCurrent());
+
     sceneManager!.render();
     stats.end();
     rafId = requestAnimationFrame(animate);
@@ -165,6 +195,16 @@ if (import.meta.hot) {
     if (cameraManager) {
       cameraManager.stop();
       cameraManager = null;
+    }
+
+    if (faceDetector) {
+      faceDetector.close();
+      faceDetector = null;
+    }
+
+    if (emotionOverlay) {
+      emotionOverlay.dispose();
+      emotionOverlay = null;
     }
 
     if (statsInstance) {
