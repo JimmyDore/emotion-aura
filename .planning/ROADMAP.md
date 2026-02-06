@@ -47,11 +47,11 @@ Plans:
   3. Emotion changes morph smoothly over 1-2 seconds with no jarring snaps between states
   4. Expression intensity matters -- a wider smile produces a stronger "happy" signal than a slight smile
   5. When user moves out of frame, the system gracefully falls back to neutral rather than glitching
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: MediaPipe FaceLandmarker integration and face detection pipeline
-- [ ] 02-02: Rule-based emotion classifier with intensity scaling and smooth transitions
+- [ ] 02-01-PLAN.md -- Emotion types, FaceDetector (FaceLandmarker wrapper), and EmotionClassifier (blendshape-to-emotion rules)
+- [ ] 02-02-PLAN.md -- EmotionState EMA smoother, EmotionOverlay UI, main.ts pipeline integration, and human verification
 
 ### Phase 3: Particle System
 **Goal**: An organic, fluid particle system renders around the user's face and visually transforms based on their detected emotion
