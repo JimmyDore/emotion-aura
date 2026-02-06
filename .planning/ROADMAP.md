@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Project scaffold, Vite + TypeScript + Three.js setup, core types, and scene rendering
+- [x] 01-01-PLAN.md -- Project scaffold, Vite + TypeScript + Three.js setup, core types, and scene rendering
 - [ ] 01-02-PLAN.md -- CameraManager, ModelLoader, and UI screens (Permission, Loading, Error)
 - [ ] 01-03-PLAN.md -- Mobile gate, main.ts orchestration, and full flow integration
 
@@ -108,7 +108,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Camera & Foundation | 0/3 | Planned | - |
+| 1. Camera & Foundation | 1/3 | In progress | - |
 | 2. Emotion Detection | 0/2 | Not started | - |
 | 3. Particle System | 0/3 | Not started | - |
 | 4. Hand Gestures | 0/3 | Not started | - |
