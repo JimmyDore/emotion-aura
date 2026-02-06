@@ -151,6 +151,26 @@ body,
   border-color: rgba(255, 255, 255, 0.3);
 }
 
+.btn-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+
+.btn-text:hover {
+  color: var(--color-text);
+}
+
 /* ===== Progress Bar ===== */
 .progress-container {
   width: 100%;
