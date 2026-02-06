@@ -104,6 +104,7 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
 
   await cameraManager.attachToVideo(video);
   video.style.display = 'block';
+  video.style.transform = 'scaleX(-1)';
 
   const canvas = document.getElementById('scene') as HTMLCanvasElement | null;
   if (!canvas) {

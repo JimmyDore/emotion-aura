@@ -64,6 +64,13 @@ export class LoadingScreen {
    * Hide the screen with a fade-out transition, then remove from DOM.
    */
   hide(): void {
+    // Remove animation fill-mode that overrides inline opacity
+    this.element.classList.remove('animate-fade-in');
+    this.element.style.opacity = '1';
+
+    // Force reflow so the browser registers opacity:1 before transitioning to 0
+    void this.element.offsetHeight;
+
     this.element.style.transition = 'opacity 0.3s ease';
     this.element.style.opacity = '0';
     this.element.addEventListener(
