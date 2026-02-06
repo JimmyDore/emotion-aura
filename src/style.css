@@ -1,0 +1,222 @@
+/* ===== Color Palette ===== */
+:root {
+  --color-primary: #4fc3f7;
+  --color-primary-glow: rgba(79, 195, 247, 0.3);
+  --color-bg: #0a0a0f;
+  --color-bg-overlay: rgba(10, 10, 15, 0.85);
+  --color-text: #e0e0e0;
+  --color-text-muted: #888;
+  --color-error: #ef5350;
+  --color-error-glow: rgba(239, 83, 80, 0.3);
+  --color-success: #66bb6a;
+  --color-success-glow: rgba(102, 187, 106, 0.3);
+}
+
+/* ===== Reset ===== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--color-bg);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--color-text);
+}
+
+/* ===== App Container ===== */
+#app {
+  position: relative;
+}
+
+/* ===== Webcam Video ===== */
+#webcam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+  z-index: 0;
+  display: none;
+}
+
+/* ===== Three.js Canvas Overlay ===== */
+#scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ===== UI Overlay Screens ===== */
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-overlay);
+  text-align: center;
+  padding: 2rem;
+}
+
+.screen h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.screen p {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  max-width: 420px;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== Buttons ===== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-bg);
+  background: var(--color-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, transform 0.15s ease;
+  box-shadow: 0 0 20px var(--color-primary-glow);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 30px var(--color-primary-glow), 0 0 60px var(--color-primary-glow);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-secondary:hover {
+  color: var(--color-text);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== Progress Bar ===== */
+.progress-container {
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 8px var(--color-primary-glow);
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: 0.5rem;
+}
+
+/* ===== Error Messages ===== */
+.error-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-error);
+  text-shadow: 0 0 20px var(--color-error-glow);
+}
+
+.error-message {
+  color: var(--color-error);
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.error-hint {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  max-width: 400px;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== Animations ===== */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px var(--color-primary-glow);
+  }
+  50% {
+    box-shadow: 0 0 40px var(--color-primary-glow), 0 0 80px var(--color-primary-glow);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease forwards;
+}
+
+.animate-pulse {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
