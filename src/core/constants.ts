@@ -56,17 +56,23 @@ export const EMOTION_WEIGHTS: Record<string, BlendshapeWeight[]> = {
     { name: 'cheekSquintRight', weight: 0.15 },
   ],
   sad: [
-    { name: 'mouthFrownLeft', weight: 0.30 },
-    { name: 'mouthFrownRight', weight: 0.30 },
-    { name: 'browInnerUp', weight: 0.40 },
-  ],
-  angry: [
-    { name: 'browDownLeft', weight: 0.25 },
-    { name: 'browDownRight', weight: 0.25 },
+    { name: 'browDownLeft', weight: 0.15 },
+    { name: 'browDownRight', weight: 0.15 },
+    { name: 'browInnerUp', weight: 0.08 },
     { name: 'mouthFrownLeft', weight: 0.10 },
     { name: 'mouthFrownRight', weight: 0.10 },
-    { name: 'noseSneerLeft', weight: 0.15 },
-    { name: 'noseSneerRight', weight: 0.15 },
+    { name: 'mouthShrugLower', weight: 0.25 },
+    { name: 'mouthPucker', weight: 0.10 },
+    { name: 'eyeSquintLeft', weight: 0.035 },
+    { name: 'eyeSquintRight', weight: 0.035 },
+  ],
+  angry: [
+    { name: 'browDownLeft', weight: 0.20 },
+    { name: 'browDownRight', weight: 0.20 },
+    { name: 'noseSneerLeft', weight: 0.20 },
+    { name: 'noseSneerRight', weight: 0.20 },
+    { name: 'mouthFrownLeft', weight: 0.10 },
+    { name: 'mouthFrownRight', weight: 0.10 },
   ],
   surprised: [
     { name: 'jawOpen', weight: 0.25 },
@@ -78,5 +84,7 @@ export const EMOTION_WEIGHTS: Record<string, BlendshapeWeight[]> = {
   ],
 };
 
-/** Multiplier for neutral score derivation: neutral = max(0, 1 - maxEmotionScore * this). */
-export const NEUTRAL_SUPPRESSION_FACTOR = 1.5;
+/** Multiplier for neutral score derivation: neutral = max(0, 1 - maxEmotionScore * this).
+ * Higher values make neutral less dominant, letting emotions win at lower scores.
+ * At 2.5: an emotion score of ~0.30 starts beating neutral. */
+export const NEUTRAL_SUPPRESSION_FACTOR = 2.5;

@@ -144,14 +144,18 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
   function animate(): void {
     stats.begin();
 
-    // Run face detection (skips if video frame unchanged)
+    // Run face detection (returns null on stale frames)
     const result = faceDetector!.detect(video!);
 
-    if (result && result.faceBlendshapes && result.faceBlendshapes.length > 0) {
-      const rawScores = emotionClassifier.classify(result.faceBlendshapes[0].categories);
-      emotionState.update(rawScores);
-    } else {
-      emotionState.decayToNeutral();
+    // Only update state when detection actually ran (new video frame).
+    // Stale frames (result === null) are skipped to avoid false decay.
+    if (result !== null) {
+      if (result.faceBlendshapes && result.faceBlendshapes.length > 0) {
+        const rawScores = emotionClassifier.classify(result.faceBlendshapes[0].categories);
+        emotionState.update(rawScores);
+      } else {
+        emotionState.decayToNeutral();
+      }
     }
 
     // Update overlay every frame (reads smoothed state)

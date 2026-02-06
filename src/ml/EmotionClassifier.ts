@@ -55,6 +55,26 @@ export class EmotionClassifier {
       surprised += get(bw.name) * bw.weight;
     }
 
+    // Disambiguation: browDown is shared between angry and sad.
+    // Use secondary signals to differentiate.
+    const browDownAvg = (get('browDownLeft') + get('browDownRight')) / 2;
+    const noseSneerAvg = (get('noseSneerLeft') + get('noseSneerRight')) / 2;
+    const chinCrumple = get('mouthShrugLower');
+
+    // When brows are down with no nose sneer: use chin crumple as tiebreaker.
+    // High chin crumple (>0.3) = sad pout. Low chin crumple = angry tension.
+    if (browDownAvg > 0.4 && noseSneerAvg < 0.1) {
+      if (chinCrumple > 0.3) {
+        sad *= 1.5;
+        angry *= 0.6;
+      }
+    }
+
+    // Strong nose sneer always favors angry over sad
+    if (noseSneerAvg > 0.2) {
+      sad *= 0.5;
+    }
+
     // Neutral is the inverse: high when all emotions are low
     const maxEmotionScore = Math.max(happy, sad, angry, surprised);
     const neutral = Math.max(0, 1 - maxEmotionScore * NEUTRAL_SUPPRESSION_FACTOR);
