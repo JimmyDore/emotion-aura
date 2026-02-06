@@ -50,7 +50,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- Emotion types, FaceDetector (FaceLandmarker wrapper), and EmotionClassifier (blendshape-to-emotion rules)
+- [x] 02-01-PLAN.md -- Emotion types, FaceDetector (FaceLandmarker wrapper), and EmotionClassifier (blendshape-to-emotion rules)
 - [ ] 02-02-PLAN.md -- EmotionState EMA smoother, EmotionOverlay UI, main.ts pipeline integration, and human verification
 
 ### Phase 3: Particle System
@@ -109,7 +109,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Camera & Foundation | 3/3 | Complete | 2026-02-06 |
-| 2. Emotion Detection | 0/2 | Not started | - |
+| 2. Emotion Detection | 1/2 | In progress | - |
 | 3. Particle System | 0/3 | Not started | - |
 | 4. Hand Gestures | 0/3 | Not started | - |
 | 5. Performance & Polish | 0/3 | Not started | - |
