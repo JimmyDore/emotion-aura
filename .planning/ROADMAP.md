@@ -62,12 +62,12 @@ Plans:
   2. Each of the 5 emotion states produces a visually distinct particle behavior: warm lively particles for happy, cool rain-like particles for sad, aggressive flame-like particles for angry, burst/explosion for surprised, calm ambient drift for neutral
   3. Particles spawn from around the user's face position (tracked via landmarks), not from random screen locations
   4. Particle system automatically reduces quality (count, effects) if frame rate drops below 30 FPS
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: Three.js Points geometry with custom GLSL shaders for organic particle rendering
-- [ ] 03-02: Emotion-to-particle mapping (5 emotion profiles with color palettes, forces, and behaviors)
-- [ ] 03-03: Face-anchored spawning and adaptive quality scaling
+- [ ] 03-01-PLAN.md -- GLSL shaders (soft glow, simplex noise), ParticlePool ring buffer, and ParticleSystem Three.js mesh
+- [ ] 03-02-PLAN.md -- Emotion profile configs (5 visual profiles with colors, forces, behaviors) and particle constants
+- [ ] 03-03-PLAN.md -- Face-anchored spawning, emotion-driven rendering, adaptive quality scaling, and human verification
 
 ### Phase 4: Hand Gestures
 **Goal**: User can manipulate particles with intuitive hand gestures -- pushing, attracting, and concentrating particles
