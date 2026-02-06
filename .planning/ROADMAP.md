@@ -30,12 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User sees a helpful, specific error message when camera is denied, unavailable, or already in use by another app
   4. User sees a loading screen with visible progress indication while ML models download
   5. User on a mobile device sees a friendly "best on desktop" message instead of a broken experience
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Project scaffold, dev server, and Three.js scene setup
-- [ ] 01-02: Webcam integration with permission flow, error handling, and loading UX
-- [ ] 01-03: Mobile detection and responsive layout
+- [ ] 01-01-PLAN.md -- Project scaffold, Vite + TypeScript + Three.js setup, core types, and scene rendering
+- [ ] 01-02-PLAN.md -- CameraManager, ModelLoader, and UI screens (Permission, Loading, Error)
+- [ ] 01-03-PLAN.md -- Mobile gate, main.ts orchestration, and full flow integration
 
 ### Phase 2: Emotion Detection
 **Goal**: User's face is detected in real-time and their emotional state is visually classified, with smooth transitions and intensity scaling
@@ -108,7 +108,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Camera & Foundation | 0/3 | Not started | - |
+| 1. Camera & Foundation | 0/3 | Planned | - |
 | 2. Emotion Detection | 0/2 | Not started | - |
 | 3. Particle System | 0/3 | Not started | - |
 | 4. Hand Gestures | 0/3 | Not started | - |
