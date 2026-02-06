@@ -9,11 +9,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Camera & Setup
 
-- [ ] **CAM-01**: User can open webcam and see mirrored live feed in the browser
-- [ ] **CAM-02**: User sees clear permission prompt explaining why camera access is needed before browser asks
-- [ ] **CAM-03**: User sees helpful error messages when camera is denied, unavailable, or in use
-- [ ] **CAM-04**: User sees a loading screen with progress while ML models (~9MB) download
-- [ ] **CAM-05**: User on mobile device sees a "best experienced on desktop" message instead of a broken experience
+- [x] **CAM-01**: User can open webcam and see mirrored live feed in the browser
+- [x] **CAM-02**: User sees clear permission prompt explaining why camera access is needed before browser asks
+- [x] **CAM-03**: User sees helpful error messages when camera is denied, unavailable, or in use
+- [x] **CAM-04**: User sees a loading screen with progress while ML models (~9MB) download
+- [x] **CAM-05**: User on mobile device sees a "best experienced on desktop" message instead of a broken experience
 
 ### Emotion Detection
 
@@ -85,11 +85,11 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CAM-01 | Phase 1 | Pending |
-| CAM-02 | Phase 1 | Pending |
-| CAM-03 | Phase 1 | Pending |
-| CAM-04 | Phase 1 | Pending |
-| CAM-05 | Phase 1 | Pending |
+| CAM-01 | Phase 1 | Complete |
+| CAM-02 | Phase 1 | Complete |
+| CAM-03 | Phase 1 | Complete |
+| CAM-04 | Phase 1 | Complete |
+| CAM-05 | Phase 1 | Complete |
 | EMO-01 | Phase 2 | Pending |
 | EMO-02 | Phase 2 | Pending |
 | EMO-03 | Phase 2 | Pending |
