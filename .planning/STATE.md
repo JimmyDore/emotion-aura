@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-06)
 
 **Core value:** The webcam feed must detect emotions and render reactive particles in real-time with fluid, visually impressive results.
-**Current focus:** Phase 2 complete — ready for Phase 3
+**Current focus:** Phase 3 in progress -- particle rendering foundation built
 
 ## Current Position
 
-Phase: 2 of 5 (Emotion Detection) — COMPLETE
-Plan: 2 of 2 in current phase
-Status: Complete — verified ✓
-Last activity: 2026-02-06 -- Phase 2 verified (10/10 must-haves passed)
+Phase: 3 of 5 (Particle System)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-02-07 -- Completed 03-01-PLAN.md (GLSL shaders + ParticlePool + ParticleSystem)
 
-Progress: [########......] 43%
+Progress: [#########.....] 43%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: ~6 minutes
-- Total execution time: ~29 minutes
+- Total plans completed: 6
+- Average duration: ~5 minutes
+- Total execution time: ~31 minutes
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: [########......] 43%
 |-------|-------|-------|----------|
 | 1. Camera & Foundation | 3/3 | ~19 min | ~6 min |
 | 2. Emotion Detection | 2/2 | ~10 min | ~5 min |
+| 3. Particle System | 1/3 | ~2 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (~2 min), 01-03 (~12 min), 02-01 (~2 min), 02-02 (~8 min)
-- Trend: Phase 2 averaged 5 min/plan including human verification checkpoint
+- Last 5 plans: 01-03 (~12 min), 02-01 (~2 min), 02-02 (~8 min), 03-01 (~2 min)
+- Trend: Plan 03-01 was fast (shaders + pool + system, no integration)
 
 *Updated after each plan completion*
 
@@ -60,6 +61,10 @@ Recent decisions affecting current work:
 - [02-02]: NEUTRAL_SUPPRESSION_FACTOR tuned from 1.5 to 2.5 after live testing
 - [02-02]: Angry/sad disambiguation uses chin crumple (mouthShrugLower) threshold, not noseSneer
 - [02-02]: browDown shared between angry and sad weights; secondary signals differentiate
+- [03-01]: Ashima/stegu MIT simplex noise (standard GLSL, not hand-rolled)
+- [03-01]: Ring buffer swap-to-last-active for dead particles (O(1), contiguous active region)
+- [03-01]: DynamicDrawUsage on all buffer attributes for optimal GPU streaming
+- [03-01]: gl_PointSize base scale 300.0 for ortho camera at z=1
 
 ### Pending Todos
 
@@ -67,14 +72,13 @@ None.
 
 ### Blockers/Concerns
 
-- Exact package versions verified: three@0.182.0, @mediapipe/tasks-vision@0.10.32, vite@7.3.1, typescript@5.9.3
+- Exact package versions verified: three@0.182.0, @mediapipe/tasks-vision@0.10.32, vite@7.3.1, typescript@5.9.3, vite-plugin-glsl@1.5.1
 - Safari-specific WebGL/MediaPipe behavior may need investigation in Phase 5
-- GLSL techniques for organic/fluid particle aesthetic may need research during Phase 3
 - COOP/COEP headers may be needed if MediaPipe requires SharedArrayBuffer (not needed so far -- models loaded without issue)
 - Emotion weights may benefit from further tuning with more users in Phase 5
 
 ## Session Continuity
 
-Last session: 2026-02-06
-Stopped at: Phase 2 complete, ready for Phase 3 planning
+Last session: 2026-02-07
+Stopped at: Completed 03-01-PLAN.md, ready for 03-02-PLAN.md
 Resume file: None
