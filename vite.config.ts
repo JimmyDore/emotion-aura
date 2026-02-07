@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite';
+import glsl from 'vite-plugin-glsl';
 
 export default defineConfig({
-  // Minimal config -- Vite works out of the box for vanilla-ts.
+  plugins: [glsl()],
   // COOP/COEP headers intentionally omitted:
   // Add only if MediaPipe throws SharedArrayBuffer errors at runtime.
 });
