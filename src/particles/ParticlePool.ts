@@ -130,10 +130,9 @@ export class ParticlePool {
    * Apply a gesture-driven force field to all active particles within radius.
    * Called from main.ts when a gesture is active.
    *
-   * Force behaviors (user decisions):
+   * Force behaviors:
    * - push: radial outward explosion from hand position
-   * - attract: spiral inward (tangential + radial) toward hand
-   * - pinch: vortex funnel (strong tangential + strong inward convergence)
+   * - attract: particles orbit and float around the hand (spring equilibrium + tangential)
    */
   applyForceField(
     handX: number,
@@ -143,6 +142,9 @@ export class ParticlePool {
     strength: number,
     dt: number,
   ): void {
+    // Attract equilibrium: particles orbit at ~20% of the radius (tight around hand)
+    const equilibrium = radius * 0.20;
+
     for (let i = 0; i < this.activeCount; i++) {
       const i3 = i * 3;
       const dx = this.positions[i3] - handX;
@@ -151,36 +153,32 @@ export class ParticlePool {
 
       if (dist > radius || dist < 0.001) continue;
 
-      const t = 1.0 - dist / radius; // 1 at center, 0 at edge
-      const force = strength * t * t; // Quadratic falloff
-
       const nx = dx / dist;
       const ny = dy / dist;
 
-      switch (gestureType) {
-        case 'push': {
-          // Radial outward explosion -- punchy, explosive (user decision)
-          this.velocities[i3]     += nx * force * dt;
-          this.velocities[i3 + 1] += ny * force * dt;
-          break;
-        }
-        case 'attract': {
-          // Spiral inward: 60% radial pull + 40% tangential rotation
-          this.velocities[i3]     -= nx * force * 0.6 * dt;
-          this.velocities[i3 + 1] -= ny * force * 0.6 * dt;
-          // Tangential component (perpendicular, creates spiral orbit)
-          this.velocities[i3]     += (-ny) * force * 0.4 * dt;
-          this.velocities[i3 + 1] += nx * force * 0.4 * dt;
-          break;
-        }
-        case 'pinch': {
-          // Vortex funnel: 70% strong inward + 80% fast rotation (tornado-like)
-          this.velocities[i3]     -= nx * force * 0.7 * dt;
-          this.velocities[i3 + 1] -= ny * force * 0.7 * dt;
-          this.velocities[i3]     += (-ny) * force * 0.8 * dt;
-          this.velocities[i3 + 1] += nx * force * 0.8 * dt;
-          break;
-        }
+      if (gestureType === 'push') {
+        // Radial outward explosion — punchy, explosive
+        const t = 1.0 - dist / radius;
+        const force = strength * t * t;
+        this.velocities[i3]     += nx * force * dt;
+        this.velocities[i3 + 1] += ny * force * dt;
+      } else if (gestureType === 'attract') {
+        // Spring orbit: pull inward when far from equilibrium, push out when too close
+        const springForce = (dist - equilibrium) * strength * 0.8;
+        // Tangential force for orbiting (perpendicular to radial)
+        const t = 1.0 - dist / radius;
+        const tangentForce = strength * t * 0.6;
+
+        // Radial spring: negative = pull inward, positive = push outward
+        this.velocities[i3]     -= nx * springForce * dt;
+        this.velocities[i3 + 1] -= ny * springForce * dt;
+        // Tangential orbit
+        this.velocities[i3]     += (-ny) * tangentForce * dt;
+        this.velocities[i3 + 1] += nx * tangentForce * dt;
+
+        // Damping: slow particles down so they settle into orbit instead of flying through
+        this.velocities[i3]     *= 1.0 - 2.0 * dt;
+        this.velocities[i3 + 1] *= 1.0 - 2.0 * dt;
       }
     }
   }

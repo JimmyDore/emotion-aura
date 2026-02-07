@@ -19,7 +19,7 @@ import { blendProfiles } from './particles/EmotionProfile.ts';
 import { classifyGesture, getPalmCenter } from './ml/GestureClassifier.ts';
 import { GestureState } from './state/GestureState.ts';
 import { GestureOverlay } from './ui/GestureOverlay.ts';
-import { WASM_CDN, SPAWN_RATE_BASE, PARTICLE_SIZE_BASE, PARTICLE_LIFETIME_BASE, GESTURE_INFLUENCE_PX, FORCE_PUSH_STRENGTH, FORCE_ATTRACT_STRENGTH, FORCE_PINCH_STRENGTH } from './core/constants.ts';
+import { WASM_CDN, SPAWN_RATE_BASE, PARTICLE_SIZE_BASE, PARTICLE_LIFETIME_BASE, GESTURE_INFLUENCE_PX, FORCE_PUSH_STRENGTH, FORCE_ATTRACT_STRENGTH } from './core/constants.ts';
 import type { CameraError, GestureType } from './core/types.ts';
 import type { NormalizedLandmark } from '@mediapipe/tasks-vision';
 
@@ -182,6 +182,7 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
   // Track video frame changes for staggered inference
   let lastVideoTime = -1;
   let inferenceToggle = false;
+  let lastHandTime = performance.now() / 1000; // Track time between hand frames
 
   // Render loop with emotion detection + particle pipeline
   function animate(): void {
@@ -225,6 +226,10 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
         }
       } else {
         // HAND frame (odd)
+        // Compute dt since last hand frame (not render frame dt which is too small)
+        const handDt = Math.min(now - lastHandTime, 0.15);
+        lastHandTime = now;
+
         const handResultData = handDetector!.detect(video!);
         if (handResultData !== null && handResultData.landmarks.length > 0) {
           const landmarks = handResultData.landmarks[0];
@@ -235,9 +240,9 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
           const palmSceneX = -(palmCenter.x * 2 - 1) * aspect;
           const palmSceneY = -(palmCenter.y * 2 - 1);
 
-          gestureState.update(rawGesture, true, { x: palmSceneX, y: palmSceneY }, dt);
+          gestureState.update(rawGesture, true, { x: palmSceneX, y: palmSceneY }, handDt);
         } else {
-          gestureState.update('none', false, null, dt);
+          gestureState.update('none', false, null, handDt);
         }
       }
 
@@ -334,7 +339,6 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
       const forceStrengths: Record<GestureType, number> = {
         push: FORCE_PUSH_STRENGTH,
         attract: FORCE_ATTRACT_STRENGTH,
-        pinch: FORCE_PINCH_STRENGTH,
         none: 0,
       };
       const baseStrength = forceStrengths[gestureResult.gesture];

@@ -122,12 +122,8 @@ export const GESTURE_STABILITY_MS = 150;
 export const GESTURE_DECAY_MS = 300;
 
 /** Influence radius in pixels (converted to scene units dynamically). */
-export const GESTURE_INFLUENCE_PX = 100;
+export const GESTURE_INFLUENCE_PX = 300;
 
 /** Force field strengths (scene units/sec^2). Tunable. */
-export const FORCE_PUSH_STRENGTH = 8.0;
-export const FORCE_ATTRACT_STRENGTH = 4.0;
-export const FORCE_PINCH_STRENGTH = 6.0;
-
-/** Pinch detection: thumb-index distance threshold in normalized coords. */
-export const PINCH_THRESHOLD = 0.06;
+export const FORCE_PUSH_STRENGTH = 50.0;
+export const FORCE_ATTRACT_STRENGTH = 30.0;

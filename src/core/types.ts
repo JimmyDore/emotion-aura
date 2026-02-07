@@ -46,7 +46,7 @@ export interface BlendshapeWeight {
 }
 
 /** Gesture types detected from hand landmarks. */
-export type GestureType = 'push' | 'attract' | 'pinch' | 'none';
+export type GestureType = 'push' | 'attract' | 'none';
 
 /** Complete gesture state for a single frame. */
 export interface GestureResult {

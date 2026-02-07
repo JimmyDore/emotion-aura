@@ -1,13 +1,9 @@
 import type { GestureType } from '../core/types.ts';
 
-/**
- * Display label mapping for each gesture type.
- * 'pinch' displays as 'concentrate' for user-friendly labeling.
- */
+/** Display label mapping for each gesture type. */
 const GESTURE_LABELS: Record<GestureType, string> = {
-  push: 'push',
-  attract: 'attract',
-  pinch: 'concentrate',
+  push: 'Push',
+  attract: 'Attract',
   none: '--',
 };
 
