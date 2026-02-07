@@ -10,8 +10,8 @@ import type { HandLandmarkerResult } from '@mediapipe/tasks-vision';
  *   await detector.init(modelBuffer, wasmCdnPath);
  *   const result = detector.detect(videoElement);
  *
- * Configured for single-hand detection (numHands: 1) to minimize
- * per-frame inference cost in the staggered face/hand pipeline.
+ * Configured for dual-hand detection (numHands: 2) to enable
+ * two-handed gesture interactions in the staggered face/hand pipeline.
  */
 export class HandDetector {
   private landmarker: HandLandmarker | null = null;
@@ -34,7 +34,7 @@ export class HandDetector {
         delegate: 'GPU',
       },
       runningMode: 'VIDEO',
-      numHands: 1,
+      numHands: 2,
       minHandDetectionConfidence: 0.5,
       minTrackingConfidence: 0.5,
     });

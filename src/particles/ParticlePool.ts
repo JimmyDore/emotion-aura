@@ -1,5 +1,8 @@
 import type { GestureType } from '../core/types.ts';
 
+/** Maximum velocity magnitude (scene units/s). Prevents particles flying off-screen when two force fields overlap. */
+const MAX_SPEED = 5.0;
+
 /**
  * Pre-allocated ring-buffer particle pool.
  *
@@ -119,6 +122,16 @@ export class ParticlePool {
       // Slight velocity damping for natural deceleration
       this.velocities[i3] *= 0.995;
       this.velocities[i3 + 1] *= 0.995;
+
+      // Velocity magnitude cap (prevents extreme speeds from dual force fields)
+      const vx = this.velocities[i3];
+      const vy = this.velocities[i3 + 1];
+      const speed = Math.sqrt(vx * vx + vy * vy);
+      if (speed > MAX_SPEED) {
+        const scale = MAX_SPEED / speed;
+        this.velocities[i3] *= scale;
+        this.velocities[i3 + 1] *= scale;
+      }
 
       i++;
     }
