@@ -78,12 +78,12 @@ Plans:
   2. User can push particles away by opening their hand, attract particles by making a fist, and concentrate particles into a point by pinching
   3. A small visual indicator on screen shows the user which gesture is currently detected
   4. Gestures only activate after brief stability (~150ms), preventing false triggers when transitioning between gestures
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: MediaPipe HandLandmarker with staggered inference (face/hand alternating frames)
-- [ ] 04-02: Gesture classifier (open/fist/pinch) with stability thresholds
-- [ ] 04-03: Gesture-to-particle force fields (push, attract, concentrate)
+- [ ] 04-01-PLAN.md -- HandDetector wrapper and staggered face/hand inference in main.ts render loop
+- [ ] 04-02-PLAN.md -- GestureClassifier (rule-based), GestureState (stability + decay), GestureOverlay UI
+- [ ] 04-03-PLAN.md -- Force fields in ParticlePool, hand aura, gesture override, full integration and human verification
 
 ### Phase 5: Performance & Polish
 **Goal**: The complete experience runs at 30+ FPS across major browsers with portfolio-quality visual polish and correct spatial alignment
