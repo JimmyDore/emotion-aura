@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-06)
 
 **Core value:** The webcam feed must detect emotions and render reactive particles in real-time with fluid, visually impressive results.
-**Current focus:** Phase 3 in progress -- particle rendering foundation built
+**Current focus:** Phase 3 in progress -- emotion profiles and constants done, renderer integration next
 
 ## Current Position
 
 Phase: 3 of 5 (Particle System)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-07 -- Completed 03-01-PLAN.md (GLSL shaders + ParticlePool + ParticleSystem)
+Last activity: 2026-02-07 -- Completed 03-02-PLAN.md (Emotion Profiles)
 
-Progress: [#########.....] 43%
+Progress: [##########....] ~50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: ~5 minutes
-- Total execution time: ~31 minutes
+- Total plans completed: 7
+- Average duration: ~4.5 minutes
+- Total execution time: ~33 minutes
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: [#########.....] 43%
 |-------|-------|-------|----------|
 | 1. Camera & Foundation | 3/3 | ~19 min | ~6 min |
 | 2. Emotion Detection | 2/2 | ~10 min | ~5 min |
-| 3. Particle System | 1/3 | ~2 min | ~2 min |
+| 3. Particle System | 2/3 | ~4 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (~12 min), 02-01 (~2 min), 02-02 (~8 min), 03-01 (~2 min)
-- Trend: Plan 03-01 was fast (shaders + pool + system, no integration)
+- Last 5 plans: 02-01 (~2 min), 02-02 (~8 min), 03-01 (~2 min), 03-02 (~2 min)
+- Trend: Phase 3 data/config plans executing very fast
 
 *Updated after each plan completion*
 
@@ -65,6 +65,9 @@ Recent decisions affecting current work:
 - [03-01]: Ring buffer swap-to-last-active for dead particles (O(1), contiguous active region)
 - [03-01]: DynamicDrawUsage on all buffer attributes for optimal GPU streaming
 - [03-01]: gl_PointSize base scale 300.0 for ortho camera at z=1
+- [03-02]: Removed unused constants import -- profiles store multipliers, renderers import base constants directly
+- [03-02]: Direction [0,0] means radial outward; renderer interprets zero-length as radial spread
+- [03-02]: blendProfiles normalizes direction after weighted sum to prevent magnitude drift
 
 ### Pending Todos
 
@@ -80,5 +83,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-07
-Stopped at: Completed 03-01-PLAN.md, ready for 03-02-PLAN.md
+Stopped at: Completed 03-02-PLAN.md, ready for 03-03 (Particle Renderer integration)
 Resume file: None
