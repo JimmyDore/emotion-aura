@@ -36,12 +36,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Hand Gestures
 
-- [ ] **GES-01**: User's hands are detected in real-time via MediaPipe HandLandmarker
-- [ ] **GES-02**: Open hand gesture pushes particles away from hand position
-- [ ] **GES-03**: Closed fist gesture attracts particles toward hand position
-- [ ] **GES-04**: Pinch gesture concentrates particles into a tight point at hand position
-- [ ] **GES-05**: Gesture is visually indicated on screen (small icon or label showing detected gesture)
-- [ ] **GES-06**: Gestures require ~150ms stability before activating (no false triggers during transitions)
+- [x] **GES-01**: User's hands are detected in real-time via MediaPipe HandLandmarker
+- [x] **GES-02**: Open hand gesture pushes particles away from hand position
+- [x] **GES-03**: Closed fist gesture attracts particles toward hand position
+- [x] ~~**GES-04**: Pinch gesture concentrates particles into a tight point at hand position~~ (Removed by user decision — simplified to push + attract)
+- [x] **GES-05**: Gesture is visually indicated on screen (small icon or label showing detected gesture)
+- [x] **GES-06**: Gestures require ~150ms stability before activating (no false triggers during transitions)
 
 ### Performance & Polish
 
@@ -103,12 +103,12 @@ Deferred to future release. Tracked but not in current roadmap.
 | PRT-06 | Phase 3 | Complete |
 | PRT-07 | Phase 3 | Complete |
 | PRT-08 | Phase 3 | Complete |
-| GES-01 | Phase 4 | Pending |
-| GES-02 | Phase 4 | Pending |
-| GES-03 | Phase 4 | Pending |
-| GES-04 | Phase 4 | Pending |
-| GES-05 | Phase 4 | Pending |
-| GES-06 | Phase 4 | Pending |
+| GES-01 | Phase 4 | Complete |
+| GES-02 | Phase 4 | Complete |
+| GES-03 | Phase 4 | Complete |
+| GES-04 | Phase 4 | Removed |
+| GES-05 | Phase 4 | Complete |
+| GES-06 | Phase 4 | Complete |
 | PRF-01 | Phase 5 | Pending |
 | PRF-02 | Phase 5 | Pending |
 | PRF-03 | Phase 5 | Pending |
