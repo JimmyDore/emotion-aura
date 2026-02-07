@@ -8,6 +8,7 @@ import { LoadingScreen } from './ui/LoadingScreen.ts';
 import { ErrorScreen } from './ui/ErrorScreen.ts';
 import { MobileGate } from './ui/MobileGate.ts';
 import { FaceDetector } from './ml/FaceDetector.ts';
+import { HandDetector } from './ml/HandDetector.ts';
 import { EmotionClassifier } from './ml/EmotionClassifier.ts';
 import { EmotionState } from './state/EmotionState.ts';
 import { EmotionOverlay } from './ui/EmotionOverlay.ts';
@@ -32,6 +33,7 @@ import type { NormalizedLandmark } from '@mediapipe/tasks-vision';
 let sceneManager: SceneManager | null = null;
 let cameraManager: CameraManager | null = null;
 let faceDetector: FaceDetector | null = null;
+let handDetector: HandDetector | null = null;
 let emotionOverlay: EmotionOverlay | null = null;
 let particleSystem: ParticleSystem | null = null;
 let qualityScaler: QualityScaler | null = null;
@@ -114,6 +116,10 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
   faceDetector = new FaceDetector();
   await faceDetector.init(modelLoader.getFaceModelBuffer()!, WASM_CDN);
 
+  // Initialize hand detection from pre-downloaded model
+  handDetector = new HandDetector();
+  await handDetector.init(modelLoader.getHandModelBuffer()!, WASM_CDN);
+
   // ── d. LIVE EXPERIENCE ───────────────────────────────────────────
   const video = document.getElementById('webcam') as HTMLVideoElement | null;
   if (!video) {
@@ -159,6 +165,10 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
   // Last known face landmarks (persists across stale frames)
   let lastFaceLandmarks: NormalizedLandmark[] | undefined;
 
+  // Track video frame changes for staggered inference
+  let lastVideoTime = -1;
+  let inferenceToggle = false;
+
   // Render loop with emotion detection + particle pipeline
   function animate(): void {
     stats.begin();
@@ -168,20 +178,35 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
     const dt = Math.min(now - lastTime, 0.05); // Cap dt to prevent spiral on lag
     lastTime = now;
 
-    // Run face detection (returns null on stale frames)
-    const result = faceDetector!.detect(video!);
+    // Staggered inference: alternate face/hand detection on new video frames.
+    // Face runs on even frames, hand runs on odd frames.
+    // This keeps per-frame ML cost at one model for consistent 30fps.
+    const isNewVideoFrame = video!.currentTime !== lastVideoTime;
 
-    // Only update state when detection actually ran (new video frame).
-    // Stale frames (result === null) are skipped to avoid false decay.
-    if (result !== null) {
-      if (result.faceBlendshapes && result.faceBlendshapes.length > 0) {
-        const rawScores = emotionClassifier.classify(result.faceBlendshapes[0].categories);
-        emotionState.update(rawScores);
-        lastFaceLandmarks = result.faceLandmarks?.[0];
+    if (isNewVideoFrame) {
+      lastVideoTime = video!.currentTime;
+
+      if (!inferenceToggle) {
+        // FACE frame (even)
+        const result = faceDetector!.detect(video!);
+        if (result !== null) {
+          if (result.faceBlendshapes && result.faceBlendshapes.length > 0) {
+            const rawScores = emotionClassifier.classify(result.faceBlendshapes[0].categories);
+            emotionState.update(rawScores);
+            lastFaceLandmarks = result.faceLandmarks?.[0];
+          } else {
+            emotionState.decayToNeutral();
+            lastFaceLandmarks = undefined;
+          }
+        }
       } else {
-        emotionState.decayToNeutral();
-        lastFaceLandmarks = undefined;
+        // HAND frame (odd) -- detection only, processing deferred to Plan 04-03
+        const handResultData = handDetector!.detect(video!);
+        // TODO(04-03): Process hand landmarks for gesture classification
+        void handResultData; // Suppress unused warning until Plan 04-03 wires gesture pipeline
       }
+
+      inferenceToggle = !inferenceToggle;
     }
 
     // Update overlay every frame (reads smoothed state)
@@ -312,6 +337,11 @@ if (import.meta.hot) {
     if (faceDetector) {
       faceDetector.close();
       faceDetector = null;
+    }
+
+    if (handDetector) {
+      handDetector.close();
+      handDetector = null;
     }
 
     if (particleSystem) {
