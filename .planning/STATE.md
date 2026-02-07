@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-06)
 
 **Core value:** The webcam feed must detect emotions and render reactive particles in real-time with fluid, visually impressive results.
-**Current focus:** Phase 3 complete — ready for Phase 4
+**Current focus:** Phase 4 in progress — hand gesture detection
 
 ## Current Position
 
-Phase: 3 of 5 (Particle System) — COMPLETE
-Plan: 3 of 3 in current phase
-Status: Complete — verified ✓
-Last activity: 2026-02-07 -- Phase 3 verified (4/4 must-haves passed)
+Phase: 4 of 5 (Hand Gestures)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-02-07 -- Completed 04-01-PLAN.md
 
-Progress: [###########...] 60%
+Progress: [############..] 64%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
+- Total plans completed: 9
 - Average duration: ~5 minutes
-- Total execution time: ~41 minutes
+- Total execution time: ~43 minutes
 
 **By Phase:**
 
@@ -30,10 +30,11 @@ Progress: [###########...] 60%
 | 1. Camera & Foundation | 3/3 | ~19 min | ~6 min |
 | 2. Emotion Detection | 2/2 | ~10 min | ~5 min |
 | 3. Particle System | 3/3 | ~12 min | ~4 min |
+| 4. Hand Gestures | 1/3 | ~2 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (~8 min), 03-01 (~2 min), 03-02 (~2 min), 03-03 (~8 min)
-- Trend: Phase 3 averaged ~4 min/plan including human verification and bug fixes
+- Last 5 plans: 03-01 (~2 min), 03-02 (~2 min), 03-03 (~8 min), 04-01 (~2 min)
+- Trend: Simple wiring plans completing in ~2 min
 
 *Updated after each plan completion*
 
@@ -71,6 +72,10 @@ Recent decisions affecting current work:
 - [03-03]: Ortho camera needs plain aSize * uPixelRatio for gl_PointSize (not perspective 300/z)
 - [03-03]: Spawn at activeCount index, not ring buffer cursor (cursor incompatible with swap-compact)
 - [03-03]: Doubled particle pool (3000), spawn rate (80/sec), size (35px), lifetime (3.5s) after user feedback
+- [04-01]: Independent FilesetResolver per detector (browser cache deduplicates WASM, avoids coupling)
+- [04-01]: Outer lastVideoTime in animate() controls stagger; each detector retains own internal stale-frame check
+- [04-01]: numHands: 1 for single-hand detection (performance over multi-hand)
+- [04-01]: Hand results captured with void suppression until Plan 04-03 wires gesture pipeline
 
 ### Pending Todos
 
@@ -88,5 +93,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-07
-Stopped at: Phase 3 complete, ready for Phase 4 planning
+Stopped at: Completed 04-01-PLAN.md
 Resume file: None
