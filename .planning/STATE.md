@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-06)
+See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** The webcam feed must detect emotions and render reactive particles in real-time with fluid, visually impressive results.
-**Current focus:** Phase 6 complete — all phases done
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 6 of 6 (Detection of the 2 Hands)
-Plan: 1 of 1 in current phase
-Status: Phase complete
-Last activity: 2026-02-07 -- Completed 06-01-PLAN.md
+Phase: 6 of 6 completed (all v1.0 phases done)
+Plan: N/A — milestone complete
+Status: Ready for next milestone
+Last activity: 2026-02-07 — v1.0 milestone complete
 
-Progress: [################] 100%
+Progress: [################] 100% (v1.0)
 
 ## Performance Metrics
 
@@ -38,23 +38,17 @@ Progress: [################] 100%
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- [06-01]: numHands: 2 on existing HandLandmarker (no new model/WASM needed)
-- [06-01]: gestureStates Map<string, GestureState> keyed by handedness for independent per-hand state
-- [06-01]: seenHands Set guard prevents duplicate processing when MediaPipe misclassifies handedness
-- [06-01]: MAX_SPEED = 5.0 velocity cap prevents particles from extreme dual-force speeds
-- [06-01]: MediaPipe "Left" = user's Right hand (mirrored camera) — swapped at UI layer
+All v1.0 decisions logged in PROJECT.md Key Decisions table.
+All outcomes marked ✓ Good.
 
 ### Roadmap Evolution
 
-- Phase 6 added: Detection of the 2 Hands — two-hand tracking with independent gesture recognition
-- Phase 6 complete: Dual-hand detection with independent gestures, dual force fields, velocity cap
+v1.0 roadmap archived to milestones/v1.0-ROADMAP.md.
+Next milestone roadmap: TBD (via /gsd:new-milestone).
 
 ### Pending Todos
 
-None — all phases complete.
+None — milestone complete.
 
 ### Blockers/Concerns
 
@@ -63,5 +57,5 @@ None remaining.
 ## Session Continuity
 
 Last session: 2026-02-07
-Stopped at: All 6 phases complete. Milestone ready for audit.
+Stopped at: v1.0 milestone archived. Ready for next milestone.
 Resume file: None
