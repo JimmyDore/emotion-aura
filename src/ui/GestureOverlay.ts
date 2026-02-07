@@ -18,7 +18,7 @@ const GESTURE_LABELS: Record<GestureType, string> = {
 export class GestureOverlay {
   private root: HTMLDivElement;
   private label: HTMLSpanElement;
-  private prevGesture: GestureType | null = null;
+  private prevText = '';
 
   constructor(container: HTMLElement) {
     this.root = document.createElement('div');
@@ -33,17 +33,24 @@ export class GestureOverlay {
   }
 
   /**
-   * Update the overlay with the latest gesture.
-   * Skips DOM writes when gesture has not changed.
+   * Update the overlay with per-hand gesture labels.
+   *
+   * Parameters use MediaPipe handedness convention:
+   * - leftGesture: MediaPipe "Left" hand (user's RIGHT hand in mirrored view)
+   * - rightGesture: MediaPipe "Right" hand (user's LEFT hand in mirrored view)
+   *
+   * Display swaps labels so the user sees L/R matching their own perspective.
    */
-  update(gesture: GestureType): void {
-    if (gesture === this.prevGesture) return;
+  update(leftGesture: GestureType, rightGesture: GestureType): void {
+    // Swap for user perspective: MediaPipe "Right" = user's Left, MediaPipe "Left" = user's Right
+    const text = `L: ${GESTURE_LABELS[rightGesture]} / R: ${GESTURE_LABELS[leftGesture]}`;
+    if (text === this.prevText) return;
 
-    this.label.textContent = GESTURE_LABELS[gesture];
-    this.prevGesture = gesture;
+    this.label.textContent = text;
+    this.prevText = text;
 
-    // Toggle active class for visibility styling
-    if (gesture !== 'none') {
+    // Toggle active class if EITHER gesture is not 'none'
+    if (leftGesture !== 'none' || rightGesture !== 'none') {
       this.root.classList.add('gesture-overlay--active');
     } else {
       this.root.classList.remove('gesture-overlay--active');

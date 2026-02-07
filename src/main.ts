@@ -41,7 +41,7 @@ let emotionOverlay: EmotionOverlay | null = null;
 let particleSystem: ParticleSystem | null = null;
 let qualityScaler: QualityScaler | null = null;
 let gestureOverlay: GestureOverlay | null = null;
-let handAura: HTMLDivElement | null = null;
+let handAuras: Map<string, HTMLDivElement> | null = null;
 let statsInstance: { dom: HTMLElement; begin: () => void; end: () => void } | null = null;
 let brandingEl: HTMLDivElement | null = null;
 let statsToggleEl: HTMLButtonElement | null = null;
@@ -150,14 +150,21 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
   const emotionState = new EmotionState();
   emotionOverlay = new EmotionOverlay(app);
 
-  // Gesture pipeline
-  const gestureState = new GestureState();
+  // Gesture pipeline -- one GestureState per hand (keyed by MediaPipe handedness label)
+  const gestureStates = new Map<string, GestureState>([
+    ['Left', new GestureState()],
+    ['Right', new GestureState()],
+  ]);
   gestureOverlay = new GestureOverlay(app);
 
-  // Hand aura: positioned div showing force field radius
-  handAura = document.createElement('div');
-  handAura.className = 'hand-aura';
-  app.appendChild(handAura);
+  // Hand auras: one positioned div per hand showing force field radius
+  handAuras = new Map<string, HTMLDivElement>();
+  for (const label of ['Left', 'Right']) {
+    const aura = document.createElement('div');
+    aura.className = 'hand-aura';
+    app.appendChild(aura);
+    handAuras.set(label, aura);
+  }
 
   // Particle system
   particleSystem = new ParticleSystem(sceneManager.scene);
@@ -223,7 +230,9 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
     const display = overlaysVisible ? '' : 'none';
     emotionOverlay!.getRoot().style.display = display;
     gestureOverlay!.getRoot().style.display = display;
-    if (handAura) handAura.style.display = display;
+    for (const [, aura] of handAuras!) {
+      aura.style.display = display;
+    }
   });
   document.body.appendChild(overlayToggleEl);
 
@@ -275,9 +284,13 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
             emotionState.update(rawScores);
             lastFaceLandmarks = result.faceLandmarks?.[0];
           } else {
-            // Face lost
-            const gestureNow = gestureState.getCurrent();
-            if (gestureNow.active && gestureNow.handPosition) {
+            // Face lost -- check if ANY hand is active (occlusion heuristic)
+            let anyHandActive = false;
+            for (const [, state] of gestureStates) {
+              const r = state.getCurrent();
+              if (r.active && r.handPosition) { anyHandActive = true; break; }
+            }
+            if (anyHandActive) {
               // Occlusion: hand present + face lost = freeze last emotion (don't decay)
               // Keep lastFaceLandmarks as-is (don't set to undefined)
             } else {
@@ -287,24 +300,40 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
           }
         }
       } else {
-        // HAND frame (odd)
-        // Compute dt since last hand frame (not render frame dt which is too small)
+        // HAND frame (odd) -- process 0-2 detected hands
         const handDt = Math.min(now - lastHandTime, 0.15);
         lastHandTime = now;
 
         const handResultData = handDetector!.detect(video!);
+        const seenHands = new Set<string>();
+
         if (handResultData !== null && handResultData.landmarks.length > 0) {
-          const landmarks = handResultData.landmarks[0];
-          const rawGesture = classifyGesture(landmarks);
-          const palmCenter = getPalmCenter(landmarks);
+          for (let i = 0; i < handResultData.landmarks.length; i++) {
+            const handedness = handResultData.handedness[i][0].categoryName; // "Left" or "Right"
 
-          // Convert palm center to scene coordinates (same as FaceLandmarkTracker.toScene)
-          const palmSceneX = -(palmCenter.x * 2 - 1) * aspect;
-          const palmSceneY = -(palmCenter.y * 2 - 1);
+            // Guard: skip if we already processed a hand with this label this frame
+            // (MediaPipe may misclassify both hands as same handedness ~5% of frames)
+            if (seenHands.has(handedness)) continue;
+            seenHands.add(handedness);
 
-          gestureState.update(rawGesture, true, { x: palmSceneX, y: palmSceneY }, handDt);
-        } else {
-          gestureState.update('none', false, null, handDt);
+            const landmarks = handResultData.landmarks[i];
+            const rawGesture = classifyGesture(landmarks);
+            const palmCenter = getPalmCenter(landmarks);
+            const palmSceneX = -(palmCenter.x * 2 - 1) * aspect;
+            const palmSceneY = -(palmCenter.y * 2 - 1);
+
+            const state = gestureStates.get(handedness);
+            if (state) {
+              state.update(rawGesture, true, { x: palmSceneX, y: palmSceneY }, handDt);
+            }
+          }
+        }
+
+        // Hands NOT seen this frame: update with no detection (triggers decay)
+        for (const [label, state] of gestureStates) {
+          if (!seenHands.has(label)) {
+            state.update('none', false, null, handDt);
+          }
         }
       }
 
@@ -313,9 +342,6 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
 
     // Update overlay every frame (reads smoothed state)
     emotionOverlay!.update(emotionState.getCurrent());
-
-    // Read gesture state once per frame (used in spawn, force field, and UI sections)
-    const gestureResult = gestureState.getCurrent();
 
     // ── Particle spawning and updating ─────────────────────────────
     const currentEmotion = emotionState.getCurrent();
@@ -362,8 +388,11 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
         }
 
         const angle = baseAngle + (Math.random() - 0.5) * profile.spread;
-        // When gesture active: reduce initial velocity so force fields dominate
-        const gestureActive = gestureResult.active;
+        // When any gesture active: reduce initial velocity so force fields dominate
+        let gestureActive = false;
+        for (const [, state] of gestureStates) {
+          if (state.getCurrent().active) { gestureActive = true; break; }
+        }
         const speedScale = gestureActive ? 0.2 : 1.0;
         const speed = profile.speed * (0.5 + Math.random() * 0.5) * (0.5 + intensity * 0.5) * speedScale;
         const vx = Math.cos(angle) * speed;
@@ -392,52 +421,51 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
       faceLandmarkTracker.reset();
     }
 
-    // ── Gesture force fields ──────────────────────────────────────────
-    if (gestureResult.active && gestureResult.handPosition) {
-      // Determine force strength based on gesture type
-      const forceStrengths: Record<GestureType, number> = {
-        push: FORCE_PUSH_STRENGTH,
-        attract: FORCE_ATTRACT_STRENGTH,
-        none: 0,
-      };
-      const baseStrength = forceStrengths[gestureResult.gesture];
-      const effectiveStrength = baseStrength * gestureResult.strength; // strength decays on hand loss
+    // ── Gesture force fields (per hand) ────────────────────────────────
+    const forceStrengths: Record<GestureType, number> = {
+      push: FORCE_PUSH_STRENGTH,
+      attract: FORCE_ATTRACT_STRENGTH,
+      none: 0,
+    };
+    const influenceRadius = (GESTURE_INFLUENCE_PX / window.innerHeight) * 2.0;
 
-      // Influence radius: convert pixels to scene units
-      const influenceRadius = (GESTURE_INFLUENCE_PX / window.innerHeight) * 2.0;
-
-      particleSystem!.getPool().applyForceField(
-        gestureResult.handPosition.x,
-        gestureResult.handPosition.y,
-        gestureResult.gesture,
-        influenceRadius,
-        effectiveStrength,
-        dt,
-      );
+    for (const [, state] of gestureStates) {
+      const result = state.getCurrent();
+      if (result.active && result.handPosition) {
+        const effectiveStrength = forceStrengths[result.gesture] * result.strength;
+        particleSystem!.getPool().applyForceField(
+          result.handPosition.x,
+          result.handPosition.y,
+          result.gesture,
+          influenceRadius,
+          effectiveStrength,
+          dt,
+        );
+      }
     }
 
     // Update particle system (physics + GPU buffer sync)
     particleSystem!.update(dt, now);
 
-    // Update gesture overlay
-    gestureOverlay!.update(gestureResult.gesture);
+    // Update gesture overlay with per-hand labels
+    const leftResult = gestureStates.get('Left')!.getCurrent();
+    const rightResult = gestureStates.get('Right')!.getCurrent();
+    gestureOverlay!.update(leftResult.gesture, rightResult.gesture);
 
-    // Update hand aura position and visibility
-    if (handAura) {
-      if (gestureResult.active && gestureResult.handPosition) {
-        // Convert scene coords back to screen coords for DOM positioning
-        // Scene: x=[-aspect, aspect], y=[-1, 1]. Screen: [0, viewportWidth], [0, viewportHeight]
-        const screenX = (1 - (gestureResult.handPosition.x / aspect + 1) / 2) * window.innerWidth;
-        const screenY = (1 - (gestureResult.handPosition.y + 1) / 2) * window.innerHeight;
-        const auraSizePx = GESTURE_INFLUENCE_PX * 2; // diameter
-
-        handAura.style.left = `${screenX}px`;
-        handAura.style.top = `${screenY}px`;
-        handAura.style.width = `${auraSizePx}px`;
-        handAura.style.height = `${auraSizePx}px`;
-        handAura.classList.add('hand-aura--visible');
+    // Update hand aura positions and visibility (one per hand)
+    for (const [label, aura] of handAuras!) {
+      const result = gestureStates.get(label)!.getCurrent();
+      if (result.active && result.handPosition) {
+        const screenX = (1 - (result.handPosition.x / aspect + 1) / 2) * window.innerWidth;
+        const screenY = (1 - (result.handPosition.y + 1) / 2) * window.innerHeight;
+        const auraSizePx = GESTURE_INFLUENCE_PX * 2;
+        aura.style.left = `${screenX}px`;
+        aura.style.top = `${screenY}px`;
+        aura.style.width = `${auraSizePx}px`;
+        aura.style.height = `${auraSizePx}px`;
+        aura.classList.add('hand-aura--visible');
       } else {
-        handAura.classList.remove('hand-aura--visible');
+        aura.classList.remove('hand-aura--visible');
       }
     }
 
@@ -514,9 +542,12 @@ if (import.meta.hot) {
       gestureOverlay = null;
     }
 
-    if (handAura) {
-      handAura.remove();
-      handAura = null;
+    if (handAuras) {
+      for (const [, aura] of handAuras) {
+        aura.remove();
+      }
+      handAuras.clear();
+      handAuras = null;
     }
 
     if (statsInstance) {
