@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-06)
 
 **Core value:** The webcam feed must detect emotions and render reactive particles in real-time with fluid, visually impressive results.
-**Current focus:** Phase 4 complete — ready for Phase 5
+**Current focus:** Phase 5 in progress — visual polish
 
 ## Current Position
 
-Phase: 4 of 5 (Hand Gestures) — COMPLETE
-Plan: 3 of 3 in current phase
-Status: Complete — verified ✓
-Last activity: 2026-02-07 -- Phase 4 verified (6/6 must-haves passed)
+Phase: 5 of 5 (Performance & Polish)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-07 -- Completed 05-01-PLAN.md
 
-Progress: [##############..] 80%
+Progress: [###############.] 92%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: ~5 minutes
-- Total execution time: ~64 minutes
+- Total execution time: ~66 minutes
 
 **By Phase:**
 
@@ -31,10 +31,11 @@ Progress: [##############..] 80%
 | 2. Emotion Detection | 2/2 | ~10 min | ~5 min |
 | 3. Particle System | 3/3 | ~12 min | ~4 min |
 | 4. Hand Gestures | 3/3 | ~19 min | ~6 min |
+| 5. Performance & Polish | 1/2 | ~2 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-03 (~8 min), 04-01 (~2 min), 04-02 (~2 min), 04-03 (~15 min)
-- Trend: Integration/verification plans take ~8-15 min, module creation plans ~2 min
+- Last 5 plans: 04-01 (~2 min), 04-02 (~2 min), 04-03 (~15 min), 05-01 (~2 min)
+- Trend: Parameter tuning / shader plans very fast (~2 min)
 
 *Updated after each plan completion*
 
@@ -84,13 +85,17 @@ Recent decisions affecting current work:
 - [04-03]: Influence radius 300px, push 50, attract 30 (tuned from initial values)
 - [04-03]: Hand-frame dt tracked separately for correct gesture stability timing
 - [04-03]: Gesture forces override emotion velocity (0.2x) but not colors or spawn position
+- [05-01]: Three-term exponential glow (core 12x + halo 4x + outer 1.5x) with 1.4x color boost for neon sparks
+- [05-01]: Face center from FACE_OVAL average (36 landmarks) not nose tip -- more stable for aura effect
+- [05-01]: Webcam brightness(0.8) contrast(1.1) saturate(1.05) -- face visible, particles still pop
+- [05-01]: NEUTRAL_SUPPRESSION_FACTOR increased from 2.5 to 3.5 for vivid emotion colors
 
 ### Pending Todos
 
-- [Phase 5] Particle visual polish: larger glow radius for more ethereal look (less dot-like)
-- [Phase 5] Face exclusion zone: particles fade/avoid face area for cleaner look
-- [Phase 5] Color dominance: reduce neutral blending when strong emotion is detected
-- [Phase 5] Fix dark webcam feed: screen is way too dim, investigate compositing/overlay opacity
+- [Phase 5] Silent quality scaler (remove visible indicator)
+- [Phase 5] Cross-browser safety (Safari gl_PointSize, context loss)
+- [Phase 5] Toggle buttons for stats/overlays
+- [Phase 5] Branding (Emotion Aura title + jimmydore.fr link)
 
 ### Blockers/Concerns
 
@@ -102,5 +107,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-07
-Stopped at: Phase 4 complete, ready for Phase 5 planning
+Stopped at: Completed 05-01-PLAN.md
 Resume file: None
