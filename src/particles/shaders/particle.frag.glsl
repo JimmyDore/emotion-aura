@@ -9,11 +9,16 @@ void main() {
   // Discard outside the circle (circular mask)
   if (dist > 0.5) discard;
 
-  // Soft exponential falloff: sharp core + soft halo
-  float glow = exp(-dist * 6.0) * 0.8 + exp(-dist * 2.0) * 0.2;
+  // Neon spark: tight bright core + medium glow halo + soft outer reach
+  float core  = exp(-dist * 12.0);          // bright center spark
+  float halo  = exp(-dist * 4.0) * 0.5;     // energy halo
+  float outer = exp(-dist * 1.5) * 0.15;    // subtle atmospheric glow
+  float glow = core + halo + outer;
 
-  // Fade in at birth, fade out at death
-  float fade = smoothstep(0.0, 0.15, vLife) * smoothstep(1.0, 0.85, vLife);
+  // Quick fade-in, slower fade-out for spark trail feel
+  float fade = smoothstep(0.0, 0.08, vLife) * smoothstep(1.0, 0.75, vLife);
 
-  gl_FragColor = vec4(vColor * glow, glow * fade);
+  // Color boost: neon sparks should be overbright at core
+  // Additive blending handles values > 1.0 gracefully
+  gl_FragColor = vec4(vColor * glow * 1.4, glow * fade);
 }

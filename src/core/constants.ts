@@ -86,8 +86,8 @@ export const EMOTION_WEIGHTS: Record<string, BlendshapeWeight[]> = {
 
 /** Multiplier for neutral score derivation: neutral = max(0, 1 - maxEmotionScore * this).
  * Higher values make neutral less dominant, letting emotions win at lower scores.
- * At 2.5: an emotion score of ~0.30 starts beating neutral. */
-export const NEUTRAL_SUPPRESSION_FACTOR = 2.5;
+ * At 3.5: an emotion score of ~0.22 starts beating neutral (more vivid emotion colors). */
+export const NEUTRAL_SUPPRESSION_FACTOR = 3.5;
 
 // ── Particle System ──────────────────────────────────────────────────
 /** Maximum particle count for the pre-allocated pool. */
