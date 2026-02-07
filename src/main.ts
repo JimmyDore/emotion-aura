@@ -11,8 +11,13 @@ import { FaceDetector } from './ml/FaceDetector.ts';
 import { EmotionClassifier } from './ml/EmotionClassifier.ts';
 import { EmotionState } from './state/EmotionState.ts';
 import { EmotionOverlay } from './ui/EmotionOverlay.ts';
-import { WASM_CDN } from './core/constants.ts';
+import { ParticleSystem } from './particles/ParticleSystem.ts';
+import { FaceLandmarkTracker } from './particles/FaceLandmarkTracker.ts';
+import { QualityScaler } from './particles/QualityScaler.ts';
+import { blendProfiles } from './particles/EmotionProfile.ts';
+import { WASM_CDN, SPAWN_RATE_BASE, PARTICLE_SIZE_BASE, PARTICLE_LIFETIME_BASE } from './core/constants.ts';
 import type { CameraError } from './core/types.ts';
+import type { NormalizedLandmark } from '@mediapipe/tasks-vision';
 
 /**
  * Emotion Aura -- main orchestration.
@@ -28,6 +33,8 @@ let sceneManager: SceneManager | null = null;
 let cameraManager: CameraManager | null = null;
 let faceDetector: FaceDetector | null = null;
 let emotionOverlay: EmotionOverlay | null = null;
+let particleSystem: ParticleSystem | null = null;
+let qualityScaler: QualityScaler | null = null;
 let statsInstance: { dom: HTMLElement; begin: () => void; end: () => void } | null = null;
 let rafId = 0;
 
@@ -129,6 +136,11 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
   const emotionState = new EmotionState();
   emotionOverlay = new EmotionOverlay(app);
 
+  // Particle system
+  particleSystem = new ParticleSystem(sceneManager.scene);
+  const faceLandmarkTracker = new FaceLandmarkTracker();
+  qualityScaler = new QualityScaler(particleSystem.getPool());
+
   // Dynamic import for stats.js (dev tool; avoids verbatimModuleSyntax conflict)
   const StatsModule = await import('stats.js');
   const Stats = StatsModule.default;
@@ -140,9 +152,21 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
   document.body.appendChild(stats.dom);
   statsInstance = stats;
 
-  // Render loop with emotion detection pipeline
+  // Time tracking for particle system
+  let lastTime = performance.now() / 1000;
+  let spawnAccumulator = 0;
+
+  // Last known face landmarks (persists across stale frames)
+  let lastFaceLandmarks: NormalizedLandmark[] | undefined;
+
+  // Render loop with emotion detection + particle pipeline
   function animate(): void {
     stats.begin();
+
+    // Track time for particle system
+    const now = performance.now() / 1000;
+    const dt = Math.min(now - lastTime, 0.05); // Cap dt to prevent spiral on lag
+    lastTime = now;
 
     // Run face detection (returns null on stale frames)
     const result = faceDetector!.detect(video!);
@@ -153,13 +177,84 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
       if (result.faceBlendshapes && result.faceBlendshapes.length > 0) {
         const rawScores = emotionClassifier.classify(result.faceBlendshapes[0].categories);
         emotionState.update(rawScores);
+        lastFaceLandmarks = result.faceLandmarks?.[0];
       } else {
         emotionState.decayToNeutral();
+        lastFaceLandmarks = undefined;
       }
     }
 
     // Update overlay every frame (reads smoothed state)
     emotionOverlay!.update(emotionState.getCurrent());
+
+    // ── Particle spawning and updating ─────────────────────────────
+    const currentEmotion = emotionState.getCurrent();
+    const profile = blendProfiles(currentEmotion.scores);
+
+    // Get face position in scene coordinates
+    const aspect = window.innerWidth / window.innerHeight;
+    const facePos = faceLandmarkTracker.update(lastFaceLandmarks, aspect);
+
+    if (facePos && currentEmotion.faceDetected) {
+      particleSystem!.setSpawnCenter(facePos.x, facePos.y);
+
+      // Spawn particles based on emotion profile and intensity
+      const intensity = currentEmotion.intensity;
+      const spawnRate = SPAWN_RATE_BASE * profile.spawnRateMultiplier * (0.3 + 0.7 * intensity);
+      const particlesToSpawn = spawnRate * dt;
+
+      // Fractional spawning: accumulate and spawn whole particles
+      spawnAccumulator += particlesToSpawn;
+      while (spawnAccumulator >= 1) {
+        spawnAccumulator -= 1;
+
+        // Determine direction: zero-length means radial outward from center
+        const dirLen = Math.sqrt(
+          profile.direction[0] * profile.direction[0] +
+          profile.direction[1] * profile.direction[1],
+        );
+
+        let baseAngle: number;
+        if (dirLen < 0.001) {
+          // Radial outward: random angle
+          baseAngle = Math.random() * Math.PI * 2;
+        } else {
+          baseAngle = Math.atan2(profile.direction[1], profile.direction[0]);
+        }
+
+        const angle = baseAngle + (Math.random() - 0.5) * profile.spread;
+        const speed = profile.speed * (0.5 + Math.random() * 0.5) * (0.5 + intensity * 0.5);
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed;
+
+        // Pick random color from profile palette
+        const colorIdx = Math.floor(Math.random() * profile.colors.length);
+        const [r, g, b] = profile.colors[colorIdx];
+
+        // Scale size and lifetime by intensity
+        const size = PARTICLE_SIZE_BASE * profile.sizeMultiplier * (0.5 + Math.random() * 0.5) * (0.7 + intensity * 0.3);
+        const lifetime = PARTICLE_LIFETIME_BASE * profile.lifetimeMultiplier * (0.8 + Math.random() * 0.4);
+
+        // Spawn at face position with slight random offset
+        const offsetX = (Math.random() - 0.5) * 0.15;
+        const offsetY = (Math.random() - 0.5) * 0.15;
+
+        particleSystem!.spawn(
+          facePos.x + offsetX, facePos.y + offsetY,
+          vx, vy,
+          r, g, b,
+          size, lifetime,
+        );
+      }
+    } else {
+      faceLandmarkTracker.reset();
+    }
+
+    // Update particle system (physics + GPU buffer sync)
+    particleSystem!.update(dt, now);
+
+    // Quality scaling
+    qualityScaler!.update(dt);
 
     sceneManager!.render();
     stats.end();
@@ -204,6 +299,16 @@ if (import.meta.hot) {
     if (faceDetector) {
       faceDetector.close();
       faceDetector = null;
+    }
+
+    if (particleSystem) {
+      particleSystem.dispose();
+      particleSystem = null;
+    }
+
+    if (qualityScaler) {
+      qualityScaler.dispose();
+      qualityScaler = null;
     }
 
     if (emotionOverlay) {
