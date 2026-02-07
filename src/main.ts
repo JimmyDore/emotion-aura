@@ -267,6 +267,13 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
     // Aspect ratio (needed by both gesture coords and face landmarks)
     const aspect = window.innerWidth / window.innerHeight;
 
+    // object-fit: cover crops the video when its aspect ratio differs from the viewport.
+    // MediaPipe landmarks are in the full video [0,1] space, so we must scale
+    // coordinates to match only the visible (uncropped) portion.
+    const videoAR = video!.videoWidth / video!.videoHeight || aspect;
+    const coverScaleX = Math.max(1, videoAR / aspect);
+    const coverScaleY = Math.max(1, aspect / videoAR);
+
     // Staggered inference: alternate face/hand detection on new video frames.
     // Face runs on even frames, hand runs on odd frames.
     // This keeps per-frame ML cost at one model for consistent 30fps.
@@ -319,8 +326,8 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
             const landmarks = handResultData.landmarks[i];
             const rawGesture = classifyGesture(landmarks);
             const palmCenter = getPalmCenter(landmarks);
-            const palmSceneX = -(palmCenter.x * 2 - 1) * aspect;
-            const palmSceneY = -(palmCenter.y * 2 - 1);
+            const palmSceneX = -(palmCenter.x * 2 - 1) * aspect * coverScaleX;
+            const palmSceneY = -(palmCenter.y * 2 - 1) * coverScaleY;
 
             const state = gestureStates.get(handedness);
             if (state) {
@@ -348,7 +355,7 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
     const profile = blendProfiles(currentEmotion.scores);
 
     // Get face spawn points (ears + center) in scene coordinates
-    const facePoints = faceLandmarkTracker.update(lastFaceLandmarks, aspect);
+    const facePoints = faceLandmarkTracker.update(lastFaceLandmarks, aspect, coverScaleX, coverScaleY);
 
     if (facePoints && currentEmotion.faceDetected) {
       particleSystem!.setSpawnCenter(facePoints.center.x, facePoints.center.y);
@@ -456,8 +463,8 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
     for (const [label, aura] of handAuras!) {
       const result = gestureStates.get(label)!.getCurrent();
       if (result.active && result.handPosition) {
-        const screenX = (1 - (result.handPosition.x / aspect + 1) / 2) * window.innerWidth;
-        const screenY = (1 - (result.handPosition.y + 1) / 2) * window.innerHeight;
+        const screenX = (1 - (result.handPosition.x / (aspect * coverScaleX) + 1) / 2) * window.innerWidth;
+        const screenY = (1 - (result.handPosition.y / coverScaleY + 1) / 2) * window.innerHeight;
         const auraSizePx = GESTURE_INFLUENCE_PX * 2;
         aura.style.left = `${screenX}px`;
         aura.style.top = `${screenY}px`;

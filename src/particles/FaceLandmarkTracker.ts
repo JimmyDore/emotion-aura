@@ -55,6 +55,8 @@ export class FaceLandmarkTracker {
   update(
     faceLandmarks: NormalizedLandmark[] | undefined,
     aspect: number,
+    coverScaleX = 1,
+    coverScaleY = 1,
   ): FaceSpawnPoints | null {
     if (!faceLandmarks || faceLandmarks.length === 0) {
       return null;
@@ -72,7 +74,7 @@ export class FaceLandmarkTracker {
       if (!lm) continue;
 
       // Convert to scene coordinates and smooth each oval point individually
-      const raw = this.toScene(lm, aspect);
+      const raw = this.toScene(lm, aspect, coverScaleX, coverScaleY);
       this.smoothedOvalPoints[i] = this.smooth(
         this.smoothedOvalPoints[i],
         raw,
@@ -116,10 +118,15 @@ export class FaceLandmarkTracker {
   }
 
   /** Convert a MediaPipe normalized landmark to orthographic scene coords. */
-  private toScene(lm: NormalizedLandmark, aspect: number): { x: number; y: number } {
+  private toScene(
+    lm: NormalizedLandmark,
+    aspect: number,
+    coverScaleX: number,
+    coverScaleY: number,
+  ): { x: number; y: number } {
     return {
-      x: -(lm.x * 2 - 1) * aspect,  // negate for mirror
-      y: -(lm.y * 2 - 1),            // flip y
+      x: -(lm.x * 2 - 1) * aspect * coverScaleX,  // negate for mirror, correct for cover crop
+      y: -(lm.y * 2 - 1) * coverScaleY,            // flip y, correct for cover crop
     };
   }
 
