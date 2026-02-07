@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-06)
 ## Current Position
 
 Phase: 4 of 5 (Hand Gestures)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-07 -- Completed 04-01-PLAN.md
+Last activity: 2026-02-07 -- Completed 04-02-PLAN.md
 
-Progress: [############..] 64%
+Progress: [#############.] 71%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
+- Total plans completed: 10
 - Average duration: ~5 minutes
-- Total execution time: ~43 minutes
+- Total execution time: ~45 minutes
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: [############..] 64%
 | 1. Camera & Foundation | 3/3 | ~19 min | ~6 min |
 | 2. Emotion Detection | 2/2 | ~10 min | ~5 min |
 | 3. Particle System | 3/3 | ~12 min | ~4 min |
-| 4. Hand Gestures | 1/3 | ~2 min | ~2 min |
+| 4. Hand Gestures | 2/3 | ~4 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (~2 min), 03-02 (~2 min), 03-03 (~8 min), 04-01 (~2 min)
-- Trend: Simple wiring plans completing in ~2 min
+- Last 5 plans: 03-02 (~2 min), 03-03 (~8 min), 04-01 (~2 min), 04-02 (~2 min)
+- Trend: Module creation plans completing in ~2 min
 
 *Updated after each plan completion*
 
@@ -76,6 +76,11 @@ Recent decisions affecting current work:
 - [04-01]: Outer lastVideoTime in animate() controls stagger; each detector retains own internal stale-frame check
 - [04-01]: numHands: 1 for single-hand detection (performance over multi-hand)
 - [04-01]: Hand results captured with void suppression until Plan 04-03 wires gesture pipeline
+- [04-02]: Pinch has highest classification priority (before fist/open checks)
+- [04-02]: Finger curl: TIP.y > PIP.y in MediaPipe normalized coords (y-down)
+- [04-02]: Ambiguous hand poses (partial curl) classify as 'none' to avoid false positives
+- [04-02]: Pinch displays as 'concentrate' in UI for user-friendly labeling
+- [04-02]: Gesture overlay at top-left mirrors emotion overlay at top-right
 
 ### Pending Todos
 
@@ -93,5 +98,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-07
-Stopped at: Completed 04-01-PLAN.md
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None
