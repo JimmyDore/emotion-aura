@@ -88,3 +88,28 @@ export const EMOTION_WEIGHTS: Record<string, BlendshapeWeight[]> = {
  * Higher values make neutral less dominant, letting emotions win at lower scores.
  * At 2.5: an emotion score of ~0.30 starts beating neutral. */
 export const NEUTRAL_SUPPRESSION_FACTOR = 2.5;
+
+// ── Particle System ──────────────────────────────────────────────────
+/** Maximum particle count for the pre-allocated pool. */
+export const MAX_PARTICLES = 1500;
+
+/** Base spawn rate (particles/second) before emotion intensity scaling. */
+export const SPAWN_RATE_BASE = 40;
+
+/** Maximum spawn rate at full intensity. */
+export const SPAWN_RATE_MAX = 120;
+
+/** Base particle lifetime in seconds. */
+export const PARTICLE_LIFETIME_BASE = 2.5;
+
+/** Base particle size in pixels (before pixel ratio scaling). */
+export const PARTICLE_SIZE_BASE = 25;
+
+/** FPS threshold below which quality scaling activates. */
+export const QUALITY_FPS_THRESHOLD = 30;
+
+/** Duration in seconds FPS must stay below threshold before scaling down. */
+export const QUALITY_SCALE_DELAY = 1.0;
+
+/** Minimum particle count (floor for quality scaling). */
+export const QUALITY_MIN_PARTICLES = 300;
