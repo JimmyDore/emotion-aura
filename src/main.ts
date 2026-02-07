@@ -43,6 +43,9 @@ let qualityScaler: QualityScaler | null = null;
 let gestureOverlay: GestureOverlay | null = null;
 let handAura: HTMLDivElement | null = null;
 let statsInstance: { dom: HTMLElement; begin: () => void; end: () => void } | null = null;
+let brandingEl: HTMLDivElement | null = null;
+let statsToggleEl: HTMLButtonElement | null = null;
+let overlayToggleEl: HTMLButtonElement | null = null;
 let rafId = 0;
 
 async function startApp(): Promise<void> {
@@ -165,12 +168,64 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
   const StatsModule = await import('stats.js');
   const Stats = StatsModule.default;
   const stats = new Stats();
-  stats.dom.style.position = 'absolute';
+  stats.dom.style.position = 'fixed';
   stats.dom.style.top = '0';
   stats.dom.style.left = '0';
   stats.dom.style.zIndex = '100';
   document.body.appendChild(stats.dom);
   statsInstance = stats;
+
+  // ── PointSize safety check ──────────────────────────────────────────
+  const gl = sceneManager!.getRenderer().getContext();
+  const pointSizeRange = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE);
+  const maxPointSize = pointSizeRange ? (pointSizeRange as Float32Array)[1] : 64;
+  console.info(`Max gl_PointSize: ${maxPointSize}`);
+  const effectiveParticleSize = Math.min(
+    PARTICLE_SIZE_BASE,
+    maxPointSize / (Math.min(window.devicePixelRatio, 2) * 1.5),
+  );
+
+  // ── Branding ────────────────────────────────────────────────────────
+  brandingEl = document.createElement('div');
+  brandingEl.className = 'branding';
+  brandingEl.innerHTML = `
+    <span class="branding__title">Emotion Aura</span>
+    <a class="branding__link" href="https://jimmydore.fr" target="_blank" rel="noopener">jimmydore.fr</a>
+  `;
+  document.body.appendChild(brandingEl);
+
+  // ── Stats toggle button (bottom-left) ───────────────────────────────
+  let statsVisible = true;
+  statsToggleEl = document.createElement('button');
+  statsToggleEl.className = 'toggle-btn';
+  statsToggleEl.textContent = 'Stats';
+  statsToggleEl.style.position = 'fixed';
+  statsToggleEl.style.bottom = '16px';
+  statsToggleEl.style.left = '16px';
+  statsToggleEl.style.zIndex = '100';
+  statsToggleEl.addEventListener('click', () => {
+    statsVisible = !statsVisible;
+    stats.dom.style.display = statsVisible ? 'block' : 'none';
+  });
+  document.body.appendChild(statsToggleEl);
+
+  // ── Overlay toggle button (bottom-right) ────────────────────────────
+  let overlaysVisible = true;
+  overlayToggleEl = document.createElement('button');
+  overlayToggleEl.className = 'toggle-btn';
+  overlayToggleEl.textContent = 'Overlays';
+  overlayToggleEl.style.position = 'fixed';
+  overlayToggleEl.style.bottom = '16px';
+  overlayToggleEl.style.right = '16px';
+  overlayToggleEl.style.zIndex = '100';
+  overlayToggleEl.addEventListener('click', () => {
+    overlaysVisible = !overlaysVisible;
+    const display = overlaysVisible ? '' : 'none';
+    emotionOverlay!.getRoot().style.display = display;
+    gestureOverlay!.getRoot().style.display = display;
+    if (handAura) handAura.style.display = display;
+  });
+  document.body.appendChild(overlayToggleEl);
 
   // Time tracking for particle system
   let lastTime = performance.now() / 1000;
@@ -187,6 +242,13 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
   // Render loop with emotion detection + particle pipeline
   function animate(): void {
     stats.begin();
+
+    // Skip rendering if WebGL context is lost (will resume when restored)
+    if (sceneManager!.isContextLost()) {
+      stats.end();
+      rafId = requestAnimationFrame(animate);
+      return;
+    }
 
     // Track time for particle system
     const now = performance.now() / 1000;
@@ -312,7 +374,7 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
         const [r, g, b] = profile.colors[colorIdx];
 
         // Scale size and lifetime by intensity
-        const size = PARTICLE_SIZE_BASE * profile.sizeMultiplier * (0.5 + Math.random() * 0.5) * (0.7 + intensity * 0.3);
+        const size = effectiveParticleSize * profile.sizeMultiplier * (0.5 + Math.random() * 0.5) * (0.7 + intensity * 0.3);
         const lifetime = PARTICLE_LIFETIME_BASE * profile.lifetimeMultiplier * (0.8 + Math.random() * 0.4);
 
         // Spawn at oval contour point with slight random offset
@@ -460,6 +522,21 @@ if (import.meta.hot) {
     if (statsInstance) {
       statsInstance.dom.remove();
       statsInstance = null;
+    }
+
+    if (brandingEl) {
+      brandingEl.remove();
+      brandingEl = null;
+    }
+
+    if (statsToggleEl) {
+      statsToggleEl.remove();
+      statsToggleEl = null;
+    }
+
+    if (overlayToggleEl) {
+      overlayToggleEl.remove();
+      overlayToggleEl = null;
     }
   });
 }

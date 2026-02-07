@@ -50,6 +50,11 @@ export class GestureOverlay {
     }
   }
 
+  /** Expose root element for external toggle control. */
+  getRoot(): HTMLDivElement {
+    return this.root;
+  }
+
   /**
    * Remove overlay from the DOM. Call during HMR cleanup.
    */
