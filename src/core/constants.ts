@@ -113,3 +113,21 @@ export const QUALITY_SCALE_DELAY = 1.0;
 
 /** Minimum particle count (floor for quality scaling). */
 export const QUALITY_MIN_PARTICLES = 300;
+
+// ── Gesture Detection ───────────────────────────────────────────────
+/** Milliseconds a gesture must persist before activating (GES-06). */
+export const GESTURE_STABILITY_MS = 150;
+
+/** Milliseconds for gesture force to decay after hand leaves frame. */
+export const GESTURE_DECAY_MS = 300;
+
+/** Influence radius in pixels (converted to scene units dynamically). */
+export const GESTURE_INFLUENCE_PX = 100;
+
+/** Force field strengths (scene units/sec^2). Tunable. */
+export const FORCE_PUSH_STRENGTH = 8.0;
+export const FORCE_ATTRACT_STRENGTH = 4.0;
+export const FORCE_PINCH_STRENGTH = 6.0;
+
+/** Pinch detection: thumb-index distance threshold in normalized coords. */
+export const PINCH_THRESHOLD = 0.06;

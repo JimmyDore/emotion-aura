@@ -44,3 +44,14 @@ export interface BlendshapeWeight {
   name: string;
   weight: number;
 }
+
+/** Gesture types detected from hand landmarks. */
+export type GestureType = 'push' | 'attract' | 'pinch' | 'none';
+
+/** Complete gesture state for a single frame. */
+export interface GestureResult {
+  gesture: GestureType;
+  active: boolean;       // true when gesture is confirmed and force field should apply
+  strength: number;      // 0-1, used for decay when hand leaves frame
+  handPosition: { x: number; y: number } | null;  // scene coordinates, null if no hand
+}
