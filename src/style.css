@@ -314,23 +314,6 @@ body,
   transition: width 0.3s ease, background-color 0.3s ease;
 }
 
-/* ===== Quality Indicator ===== */
-.quality-indicator {
-  position: fixed;
-  bottom: 16px;
-  left: 16px;
-  z-index: 50;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-}
-
 /* ===== Gesture Overlay ===== */
 .gesture-overlay {
   position: fixed;

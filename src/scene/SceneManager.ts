@@ -16,6 +16,8 @@ export class SceneManager {
 
   private readonly renderer: THREE.WebGLRenderer;
   private readonly onResize: () => void;
+  private readonly onContextLost: (event: Event) => void;
+  private readonly onContextRestored: () => void;
 
   constructor(canvas: HTMLCanvasElement) {
     // Transparent WebGL renderer overlaid on the video feed
@@ -46,11 +48,32 @@ export class SceneManager {
       this.renderer.setSize(window.innerWidth, window.innerHeight);
     };
     window.addEventListener('resize', this.onResize);
+
+    // WebGL context loss / restoration handlers
+    this.onContextLost = (event: Event) => {
+      event.preventDefault(); // Allows context restoration attempt
+      console.warn('WebGL context lost -- pausing render loop');
+    };
+    this.onContextRestored = () => {
+      console.info('WebGL context restored -- resuming');
+    };
+    canvas.addEventListener('webglcontextlost', this.onContextLost);
+    canvas.addEventListener('webglcontextrestored', this.onContextRestored);
   }
 
   /** Render one frame. Called from the main render loop. */
   render(): void {
     this.renderer.render(this.scene, this.camera);
+  }
+
+  /** Expose renderer so callers can query GL parameters (e.g. max point size). */
+  getRenderer(): THREE.WebGLRenderer {
+    return this.renderer;
+  }
+
+  /** Returns true if the WebGL context has been lost. */
+  isContextLost(): boolean {
+    return this.renderer.getContext().isContextLost();
   }
 
   /**
@@ -59,6 +82,11 @@ export class SceneManager {
    */
   dispose(): void {
     window.removeEventListener('resize', this.onResize);
+
+    // Remove context loss listeners
+    const canvas = this.renderer.domElement;
+    canvas.removeEventListener('webglcontextlost', this.onContextLost);
+    canvas.removeEventListener('webglcontextrestored', this.onContextRestored);
 
     // Traverse scene and dispose all geometries and materials
     this.scene.traverse((obj: THREE.Object3D) => {

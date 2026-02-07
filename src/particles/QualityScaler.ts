@@ -15,8 +15,7 @@ import {
  * When FPS recovers above threshold + 5 (hysteresis) for QUALITY_SCALE_DELAY
  * seconds, it increases max active by 10% (capped at MAX_PARTICLES).
  *
- * Creates a small DOM indicator in the bottom-left corner that appears
- * when quality has been reduced and hides when fully recovered.
+ * Operates silently with no visible UI indicator.
  */
 export class QualityScaler {
   /** Number of frames to average for FPS calculation. */
@@ -39,12 +38,8 @@ export class QualityScaler {
   /** Duration (seconds) FPS has been above threshold + hysteresis continuously. */
   private aboveDuration = 0;
 
-  /** DOM indicator element. */
-  private indicator: HTMLDivElement | null = null;
-
   constructor(pool: ParticlePool) {
     this.pool = pool;
-    this.createIndicator();
   }
 
   /**
@@ -104,8 +99,6 @@ export class QualityScaler {
       this.aboveDuration = 0;
     }
 
-    // Update DOM indicator visibility
-    this.updateIndicator();
   }
 
   /** Returns true if the current max is below MAX_PARTICLES (quality reduced). */
@@ -118,12 +111,9 @@ export class QualityScaler {
     return this.currentMax;
   }
 
-  /** Remove DOM element. */
+  /** No-op (reserved for future resource cleanup). */
   dispose(): void {
-    if (this.indicator) {
-      this.indicator.remove();
-      this.indicator = null;
-    }
+    // No DOM elements to remove -- quality scaler operates silently.
   }
 
   /** Compute average FPS from rolling frame time buffer. */
@@ -132,20 +122,5 @@ export class QualityScaler {
     const avgDt =
       this.frameTimes.reduce((sum, t) => sum + t, 0) / this.frameTimes.length;
     return avgDt > 0 ? 1 / avgDt : 60;
-  }
-
-  /** Create the quality indicator DOM element (initially hidden). */
-  private createIndicator(): void {
-    this.indicator = document.createElement('div');
-    this.indicator.className = 'quality-indicator';
-    this.indicator.textContent = 'Quality: reduced';
-    this.indicator.style.opacity = '0';
-    document.body.appendChild(this.indicator);
-  }
-
-  /** Show/hide the indicator based on current scaling state. */
-  private updateIndicator(): void {
-    if (!this.indicator) return;
-    this.indicator.style.opacity = this.isScaled() ? '1' : '0';
   }
 }
