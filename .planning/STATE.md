@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-06)
 
 **Core value:** The webcam feed must detect emotions and render reactive particles in real-time with fluid, visually impressive results.
-**Current focus:** Phase 3 in progress -- emotion profiles and constants done, renderer integration next
+**Current focus:** Phase 3 complete — ready for Phase 4
 
 ## Current Position
 
-Phase: 3 of 5 (Particle System)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-02-07 -- Completed 03-02-PLAN.md (Emotion Profiles)
+Phase: 3 of 5 (Particle System) — COMPLETE
+Plan: 3 of 3 in current phase
+Status: Complete — verified ✓
+Last activity: 2026-02-07 -- Phase 3 verified (4/4 must-haves passed)
 
-Progress: [##########....] ~50%
+Progress: [###########...] 60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
-- Average duration: ~4.5 minutes
-- Total execution time: ~33 minutes
+- Total plans completed: 8
+- Average duration: ~5 minutes
+- Total execution time: ~41 minutes
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: [##########....] ~50%
 |-------|-------|-------|----------|
 | 1. Camera & Foundation | 3/3 | ~19 min | ~6 min |
 | 2. Emotion Detection | 2/2 | ~10 min | ~5 min |
-| 3. Particle System | 2/3 | ~4 min | ~2 min |
+| 3. Particle System | 3/3 | ~12 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (~2 min), 02-02 (~8 min), 03-01 (~2 min), 03-02 (~2 min)
-- Trend: Phase 3 data/config plans executing very fast
+- Last 5 plans: 02-02 (~8 min), 03-01 (~2 min), 03-02 (~2 min), 03-03 (~8 min)
+- Trend: Phase 3 averaged ~4 min/plan including human verification and bug fixes
 
 *Updated after each plan completion*
 
@@ -64,14 +64,19 @@ Recent decisions affecting current work:
 - [03-01]: Ashima/stegu MIT simplex noise (standard GLSL, not hand-rolled)
 - [03-01]: Ring buffer swap-to-last-active for dead particles (O(1), contiguous active region)
 - [03-01]: DynamicDrawUsage on all buffer attributes for optimal GPU streaming
-- [03-01]: gl_PointSize base scale 300.0 for ortho camera at z=1
 - [03-02]: Removed unused constants import -- profiles store multipliers, renderers import base constants directly
 - [03-02]: Direction [0,0] means radial outward; renderer interprets zero-length as radial spread
 - [03-02]: blendProfiles normalizes direction after weighted sum to prevent magnitude drift
+- [03-03]: Spawn from ear landmarks (234, 454) not nose tip — keeps face visible, fun visual
+- [03-03]: Ortho camera needs plain aSize * uPixelRatio for gl_PointSize (not perspective 300/z)
+- [03-03]: Spawn at activeCount index, not ring buffer cursor (cursor incompatible with swap-compact)
+- [03-03]: Doubled particle pool (3000), spawn rate (80/sec), size (35px), lifetime (3.5s) after user feedback
 
 ### Pending Todos
 
-None.
+- [Phase 5] Particle visual polish: larger glow radius for more ethereal look (less dot-like)
+- [Phase 5] Face exclusion zone: particles fade/avoid face area for cleaner look
+- [Phase 5] Color dominance: reduce neutral blending when strong emotion is detected
 
 ### Blockers/Concerns
 
@@ -83,5 +88,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-07
-Stopped at: Completed 03-02-PLAN.md, ready for 03-03 (Particle Renderer integration)
+Stopped at: Phase 3 complete, ready for Phase 4 planning
 Resume file: None

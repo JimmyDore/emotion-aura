@@ -25,14 +25,14 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Particle System
 
-- [ ] **PRT-01**: Organic/fluid particle system renders with custom GLSL shaders (soft edges, light trails, additive blending)
-- [ ] **PRT-02**: Happy emotion triggers warm, colorful, lively particles (gold/pink tones, upward movement)
-- [ ] **PRT-03**: Sad emotion triggers cool, slow particles (blue tones, rain-like downward movement)
-- [ ] **PRT-04**: Angry emotion triggers aggressive, fast particles (red/orange tones, flame-like movement)
-- [ ] **PRT-05**: Surprised emotion triggers burst/explosion effect (cyan/yellow tones, outward radial burst)
-- [ ] **PRT-06**: Neutral emotion triggers calm, subtle ambient particles (grey/silver tones, gentle drift)
-- [ ] **PRT-07**: Particles spawn from around the user's face position, not from random screen positions
-- [ ] **PRT-08**: Particle system auto-adjusts quality (count, effects) if FPS drops below 30
+- [x] **PRT-01**: Organic/fluid particle system renders with custom GLSL shaders (soft edges, light trails, additive blending)
+- [x] **PRT-02**: Happy emotion triggers warm, colorful, lively particles (gold/pink tones, upward movement)
+- [x] **PRT-03**: Sad emotion triggers cool, slow particles (blue tones, rain-like downward movement)
+- [x] **PRT-04**: Angry emotion triggers aggressive, fast particles (red/orange tones, flame-like movement)
+- [x] **PRT-05**: Surprised emotion triggers burst/explosion effect (cyan/yellow tones, outward radial burst)
+- [x] **PRT-06**: Neutral emotion triggers calm, subtle ambient particles (grey/silver tones, gentle drift)
+- [x] **PRT-07**: Particles spawn from around the user's face position, not from random screen positions
+- [x] **PRT-08**: Particle system auto-adjusts quality (count, effects) if FPS drops below 30
 
 ### Hand Gestures
 
@@ -95,14 +95,14 @@ Deferred to future release. Tracked but not in current roadmap.
 | EMO-03 | Phase 2 | Complete |
 | EMO-04 | Phase 2 | Complete |
 | EMO-05 | Phase 2 | Complete |
-| PRT-01 | Phase 3 | Pending |
-| PRT-02 | Phase 3 | Pending |
-| PRT-03 | Phase 3 | Pending |
-| PRT-04 | Phase 3 | Pending |
-| PRT-05 | Phase 3 | Pending |
-| PRT-06 | Phase 3 | Pending |
-| PRT-07 | Phase 3 | Pending |
-| PRT-08 | Phase 3 | Pending |
+| PRT-01 | Phase 3 | Complete |
+| PRT-02 | Phase 3 | Complete |
+| PRT-03 | Phase 3 | Complete |
+| PRT-04 | Phase 3 | Complete |
+| PRT-05 | Phase 3 | Complete |
+| PRT-06 | Phase 3 | Complete |
+| PRT-07 | Phase 3 | Complete |
+| PRT-08 | Phase 3 | Complete |
 | GES-01 | Phase 4 | Pending |
 | GES-02 | Phase 4 | Pending |
 | GES-03 | Phase 4 | Pending |
