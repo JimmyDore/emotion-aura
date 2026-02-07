@@ -22,7 +22,7 @@ void main() {
 
   vec4 mvPosition = modelViewMatrix * vec4(displaced, 1.0);
 
-  // Scale point size by pixel ratio for HiDPI and by distance
-  gl_PointSize = aSize * uPixelRatio * (300.0 / -mvPosition.z);
+  // Scale point size by pixel ratio for HiDPI (orthographic camera — no distance scaling)
+  gl_PointSize = aSize * uPixelRatio;
   gl_Position = projectionMatrix * mvPosition;
 }

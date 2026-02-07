@@ -27,8 +27,6 @@ export class ParticlePool {
 
   /** Number of currently alive particles. */
   private activeCount = 0;
-  /** Ring buffer write head. */
-  private cursor = 0;
   /** Optional ceiling on active particles (for quality scaling). */
   private maxActive: number;
 
@@ -65,7 +63,9 @@ export class ParticlePool {
   ): void {
     if (this.activeCount >= this.maxActive) return;
 
-    const i = this.cursor;
+    // Always append at the end of the active region so new particles
+    // fall within the [0, activeCount) draw range after compaction.
+    const i = this.activeCount;
     const i3 = i * 3;
 
     this.positions[i3] = x;
@@ -84,10 +84,7 @@ export class ParticlePool {
     this.lifetimes[i] = 0; // just born
     this.decayRates[i] = lifetime > 0 ? 1 / lifetime : 1;
 
-    this.cursor = (this.cursor + 1) % this.maxCount;
-    if (this.activeCount < this.maxCount) {
-      this.activeCount++;
-    }
+    this.activeCount++;
   }
 
   /**
