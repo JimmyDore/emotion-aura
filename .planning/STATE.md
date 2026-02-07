@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-06)
 ## Current Position
 
 Phase: 5 of 5 (Performance & Polish)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-07 -- Completed 05-01-PLAN.md
+Plan: 2 of 2 in current phase (tasks 1-2 of 3 complete)
+Status: In progress -- awaiting human verification checkpoint
+Last activity: 2026-02-07 -- Executing 05-02-PLAN.md (tasks 1-2 done)
 
-Progress: [###############.] 92%
+Progress: [###############.] 96%
 
 ## Performance Metrics
 
@@ -89,13 +89,15 @@ Recent decisions affecting current work:
 - [05-01]: Face center from FACE_OVAL average (36 landmarks) not nose tip -- more stable for aura effect
 - [05-01]: Webcam brightness(0.8) contrast(1.1) saturate(1.05) -- face visible, particles still pop
 - [05-01]: NEUTRAL_SUPPRESSION_FACTOR increased from 2.5 to 3.5 for vivid emotion colors
+- [05-02]: Quality scaler operates silently (no DOM indicator)
+- [05-02]: WebGL context loss handled gracefully (preventDefault + pause render loop)
+- [05-02]: gl_PointSize capped to ALIASED_POINT_SIZE_RANGE[1] / (pixelRatio * 1.5) for Safari safety
+- [05-02]: Stats toggle at bottom-left, Overlays toggle at bottom-right
+- [05-02]: "Emotion Aura" branding + jimmydore.fr at top-center
 
 ### Pending Todos
 
-- [Phase 5] Silent quality scaler (remove visible indicator)
-- [Phase 5] Cross-browser safety (Safari gl_PointSize, context loss)
-- [Phase 5] Toggle buttons for stats/overlays
-- [Phase 5] Branding (Emotion Aura title + jimmydore.fr link)
+- [Phase 5] Human verification of UI (05-02 task 3 checkpoint)
 
 ### Blockers/Concerns
 
@@ -107,5 +109,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-07
-Stopped at: Completed 05-01-PLAN.md
+Stopped at: 05-02-PLAN.md tasks 1-2 complete, awaiting checkpoint task 3
 Resume file: None
