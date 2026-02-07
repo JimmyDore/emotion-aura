@@ -1,3 +1,5 @@
+import type { GestureType } from '../core/types.ts';
+
 /**
  * Pre-allocated ring-buffer particle pool.
  *
@@ -122,6 +124,65 @@ export class ParticlePool {
     }
 
     return this.activeCount;
+  }
+
+  /**
+   * Apply a gesture-driven force field to all active particles within radius.
+   * Called from main.ts when a gesture is active.
+   *
+   * Force behaviors (user decisions):
+   * - push: radial outward explosion from hand position
+   * - attract: spiral inward (tangential + radial) toward hand
+   * - pinch: vortex funnel (strong tangential + strong inward convergence)
+   */
+  applyForceField(
+    handX: number,
+    handY: number,
+    gestureType: GestureType,
+    radius: number,
+    strength: number,
+    dt: number,
+  ): void {
+    for (let i = 0; i < this.activeCount; i++) {
+      const i3 = i * 3;
+      const dx = this.positions[i3] - handX;
+      const dy = this.positions[i3 + 1] - handY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist > radius || dist < 0.001) continue;
+
+      const t = 1.0 - dist / radius; // 1 at center, 0 at edge
+      const force = strength * t * t; // Quadratic falloff
+
+      const nx = dx / dist;
+      const ny = dy / dist;
+
+      switch (gestureType) {
+        case 'push': {
+          // Radial outward explosion -- punchy, explosive (user decision)
+          this.velocities[i3]     += nx * force * dt;
+          this.velocities[i3 + 1] += ny * force * dt;
+          break;
+        }
+        case 'attract': {
+          // Spiral inward: 60% radial pull + 40% tangential rotation
+          this.velocities[i3]     -= nx * force * 0.6 * dt;
+          this.velocities[i3 + 1] -= ny * force * 0.6 * dt;
+          // Tangential component (perpendicular, creates spiral orbit)
+          this.velocities[i3]     += (-ny) * force * 0.4 * dt;
+          this.velocities[i3 + 1] += nx * force * 0.4 * dt;
+          break;
+        }
+        case 'pinch': {
+          // Vortex funnel: 70% strong inward + 80% fast rotation (tornado-like)
+          this.velocities[i3]     -= nx * force * 0.7 * dt;
+          this.velocities[i3 + 1] -= ny * force * 0.7 * dt;
+          this.velocities[i3]     += (-ny) * force * 0.8 * dt;
+          this.velocities[i3 + 1] += nx * force * 0.8 * dt;
+          break;
+        }
+      }
+    }
   }
 
   /** Return the positions typed array. Consumer must set needsUpdate on the BufferAttribute. */
