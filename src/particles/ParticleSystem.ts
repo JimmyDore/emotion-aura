@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { ParticlePool } from './ParticlePool.ts';
 import vertexShader from './shaders/particle.vert.glsl';
 import fragmentShader from './shaders/particle.frag.glsl';
-import { MAX_PIXEL_RATIO } from '../core/constants.ts';
+import { MAX_PIXEL_RATIO, MAX_PARTICLES } from '../core/constants.ts';
 
 /**
  * GPU particle renderer using Three.js Points with custom ShaderMaterial.
@@ -25,7 +25,7 @@ export class ParticleSystem {
   private readonly sizeAttr: THREE.BufferAttribute;
   private readonly lifeAttr: THREE.BufferAttribute;
 
-  constructor(scene: THREE.Scene, maxParticles = 1500) {
+  constructor(scene: THREE.Scene, maxParticles = MAX_PARTICLES) {
     this.scene = scene;
     this.pool = new ParticlePool(maxParticles);
 

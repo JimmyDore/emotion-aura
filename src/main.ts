@@ -191,24 +191,35 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
     const currentEmotion = emotionState.getCurrent();
     const profile = blendProfiles(currentEmotion.scores);
 
-    // Get face position in scene coordinates
+    // Get face spawn points (ears + center) in scene coordinates
     const aspect = window.innerWidth / window.innerHeight;
-    const facePos = faceLandmarkTracker.update(lastFaceLandmarks, aspect);
+    const facePoints = faceLandmarkTracker.update(lastFaceLandmarks, aspect);
 
-    if (facePos && currentEmotion.faceDetected) {
-      particleSystem!.setSpawnCenter(facePos.x, facePos.y);
+    if (facePoints && currentEmotion.faceDetected) {
+      particleSystem!.setSpawnCenter(facePoints.center.x, facePoints.center.y);
 
       // Spawn particles based on emotion profile and intensity
       const intensity = currentEmotion.intensity;
       const spawnRate = SPAWN_RATE_BASE * profile.spawnRateMultiplier * (0.3 + 0.7 * intensity);
       const particlesToSpawn = spawnRate * dt;
 
+      // Two spawn sources: left ear and right ear
+      const spawnSources = [facePoints.leftEar, facePoints.rightEar];
+
       // Fractional spawning: accumulate and spawn whole particles
       spawnAccumulator += particlesToSpawn;
       while (spawnAccumulator >= 1) {
         spawnAccumulator -= 1;
 
-        // Determine direction: zero-length means radial outward from center
+        // Alternate between left and right ear
+        const source = spawnSources[Math.random() < 0.5 ? 0 : 1];
+
+        // Direction: outward from face center through spawn point
+        const dx = source.x - facePoints.center.x;
+        const dy = source.y - facePoints.center.y;
+        const outwardAngle = Math.atan2(dy, dx);
+
+        // Determine base angle: outward from ear + emotion direction bias
         const dirLen = Math.sqrt(
           profile.direction[0] * profile.direction[0] +
           profile.direction[1] * profile.direction[1],
@@ -216,10 +227,12 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
 
         let baseAngle: number;
         if (dirLen < 0.001) {
-          // Radial outward: random angle
-          baseAngle = Math.random() * Math.PI * 2;
+          // Radial: use outward from ear direction
+          baseAngle = outwardAngle;
         } else {
-          baseAngle = Math.atan2(profile.direction[1], profile.direction[0]);
+          // Blend outward direction with emotion direction
+          const emotionAngle = Math.atan2(profile.direction[1], profile.direction[0]);
+          baseAngle = outwardAngle * 0.6 + emotionAngle * 0.4;
         }
 
         const angle = baseAngle + (Math.random() - 0.5) * profile.spread;
@@ -235,12 +248,12 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
         const size = PARTICLE_SIZE_BASE * profile.sizeMultiplier * (0.5 + Math.random() * 0.5) * (0.7 + intensity * 0.3);
         const lifetime = PARTICLE_LIFETIME_BASE * profile.lifetimeMultiplier * (0.8 + Math.random() * 0.4);
 
-        // Spawn at face position with slight random offset
-        const offsetX = (Math.random() - 0.5) * 0.15;
-        const offsetY = (Math.random() - 0.5) * 0.15;
+        // Spawn at ear position with slight random offset
+        const offsetX = (Math.random() - 0.5) * 0.1;
+        const offsetY = (Math.random() - 0.5) * 0.1;
 
         particleSystem!.spawn(
-          facePos.x + offsetX, facePos.y + offsetY,
+          source.x + offsetX, source.y + offsetY,
           vx, vy,
           r, g, b,
           size, lifetime,

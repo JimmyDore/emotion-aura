@@ -38,7 +38,7 @@ export const EMOTION_PROFILES: Record<EmotionType, EmotionProfileConfig> = {
       [1.0, 0.5, 0.7],   // pink
       [1.0, 0.95, 0.6],  // warm yellow
     ],
-    speed: 0.4,
+    speed: 0.8,
     direction: [0, 1],   // upward
     spread: Math.PI * 0.7,
     sizeMultiplier: 1.2,
@@ -54,7 +54,7 @@ export const EMOTION_PROFILES: Record<EmotionType, EmotionProfileConfig> = {
       [0.2, 0.3, 0.7],   // deep blue
       [0.5, 0.6, 0.85],  // pale blue
     ],
-    speed: 0.15,
+    speed: 0.35,
     direction: [0, -1],  // downward
     spread: Math.PI * 0.3,
     sizeMultiplier: 0.8,
@@ -70,7 +70,7 @@ export const EMOTION_PROFILES: Record<EmotionType, EmotionProfileConfig> = {
       [1.0, 0.5, 0.0],   // orange
       [1.0, 0.8, 0.2],   // fire yellow
     ],
-    speed: 0.7,
+    speed: 1.2,
     direction: [0, 0],   // radial outward from center
     spread: Math.PI * 1.0,
     sizeMultiplier: 1.0,
@@ -86,7 +86,7 @@ export const EMOTION_PROFILES: Record<EmotionType, EmotionProfileConfig> = {
       [1.0, 1.0, 0.4],   // yellow
       [0.6, 0.9, 1.0],   // light cyan
     ],
-    speed: 1.0,
+    speed: 1.8,
     direction: [0, 0],   // radial outward burst
     spread: Math.PI * 1.0,
     sizeMultiplier: 1.5,
@@ -102,12 +102,12 @@ export const EMOTION_PROFILES: Record<EmotionType, EmotionProfileConfig> = {
       [0.5, 0.55, 0.6],   // grey
       [0.8, 0.82, 0.85],  // light silver
     ],
-    speed: 0.08,
+    speed: 0.2,
     direction: [0, 0.3],  // slight upward drift
     spread: Math.PI * 0.9,
     sizeMultiplier: 0.7,
     lifetimeMultiplier: 2.0,  // float around longer
-    spawnRateMultiplier: 0.4,
+    spawnRateMultiplier: 0.5,
     noiseAmplitude: 0.6,  // gentle organic sway
   },
 };
