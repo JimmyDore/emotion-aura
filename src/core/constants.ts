@@ -91,7 +91,7 @@ export const NEUTRAL_SUPPRESSION_FACTOR = 3.5;
 
 // ── Particle System ──────────────────────────────────────────────────
 /** Maximum particle count for the pre-allocated pool. */
-export const MAX_PARTICLES = 3000;
+export const MAX_PARTICLES = 5000;
 
 /** Base spawn rate (particles/second) before emotion intensity scaling. */
 export const SPAWN_RATE_BASE = 80;
@@ -100,7 +100,7 @@ export const SPAWN_RATE_BASE = 80;
 export const SPAWN_RATE_MAX = 250;
 
 /** Base particle lifetime in seconds. */
-export const PARTICLE_LIFETIME_BASE = 3.5;
+export const PARTICLE_LIFETIME_BASE = 12;
 
 /** Base particle size in pixels (before pixel ratio scaling). */
 export const PARTICLE_SIZE_BASE = 35;

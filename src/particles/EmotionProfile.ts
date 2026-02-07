@@ -42,7 +42,7 @@ export const EMOTION_PROFILES: Record<EmotionType, EmotionProfileConfig> = {
     direction: [0, 1],   // upward
     spread: Math.PI * 0.7,
     sizeMultiplier: 1.2,
-    lifetimeMultiplier: 1.0,
+    lifetimeMultiplier: 1.5,
     spawnRateMultiplier: 1.3,
     noiseAmplitude: 1.2,  // playful organic drift
   },
@@ -74,7 +74,7 @@ export const EMOTION_PROFILES: Record<EmotionType, EmotionProfileConfig> = {
     direction: [0, 0],   // radial outward from center
     spread: Math.PI * 1.0,
     sizeMultiplier: 1.0,
-    lifetimeMultiplier: 0.6,  // burn out fast
+    lifetimeMultiplier: 1.5,
     spawnRateMultiplier: 1.8,
     noiseAmplitude: 1.8,  // chaotic turbulent motion
   },
@@ -90,7 +90,7 @@ export const EMOTION_PROFILES: Record<EmotionType, EmotionProfileConfig> = {
     direction: [0, 0],   // radial outward burst
     spread: Math.PI * 1.0,
     sizeMultiplier: 1.5,
-    lifetimeMultiplier: 0.4,  // short burst
+    lifetimeMultiplier: 1.5,
     spawnRateMultiplier: 3.0,
     noiseAmplitude: 0.8,
   },
