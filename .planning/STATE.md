@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-06)
 
 **Core value:** The webcam feed must detect emotions and render reactive particles in real-time with fluid, visually impressive results.
-**Current focus:** Phase 5 in progress — visual polish
+**Current focus:** All phases complete — milestone ready for audit
 
 ## Current Position
 
 Phase: 5 of 5 (Performance & Polish)
-Plan: 2 of 2 in current phase (tasks 1-2 of 3 complete)
-Status: In progress -- awaiting human verification checkpoint
-Last activity: 2026-02-07 -- Executing 05-02-PLAN.md (tasks 1-2 done)
+Plan: 2 of 2 in current phase (all complete)
+Status: Phase complete — human verified and approved
+Last activity: 2026-02-07 -- Phase 5 execution finalized
 
-Progress: [###############.] 96%
+Progress: [################] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: ~5 minutes
-- Total execution time: ~66 minutes
+- Total execution time: ~68 minutes
 
 **By Phase:**
 
@@ -31,13 +31,7 @@ Progress: [###############.] 96%
 | 2. Emotion Detection | 2/2 | ~10 min | ~5 min |
 | 3. Particle System | 3/3 | ~12 min | ~4 min |
 | 4. Hand Gestures | 3/3 | ~19 min | ~6 min |
-| 5. Performance & Polish | 1/2 | ~2 min | ~2 min |
-
-**Recent Trend:**
-- Last 5 plans: 04-01 (~2 min), 04-02 (~2 min), 04-03 (~15 min), 05-01 (~2 min)
-- Trend: Parameter tuning / shader plans very fast (~2 min)
-
-*Updated after each plan completion*
+| 5. Performance & Polish | 2/2 | ~9 min | ~4.5 min |
 
 ## Accumulated Context
 
@@ -94,20 +88,18 @@ Recent decisions affecting current work:
 - [05-02]: gl_PointSize capped to ALIASED_POINT_SIZE_RANGE[1] / (pixelRatio * 1.5) for Safari safety
 - [05-02]: Stats toggle at bottom-left, Overlays toggle at bottom-right
 - [05-02]: "Emotion Aura" branding + jimmydore.fr at top-center
+- [05-final]: Particle lifetime base 3.5→12s, pool 3000→5000, all emotion multipliers unified at 1.5x (18s) for visible accumulation
 
 ### Pending Todos
 
-- [Phase 5] Human verification of UI (05-02 task 3 checkpoint)
+None — all phases complete.
 
 ### Blockers/Concerns
 
-- Exact package versions verified: three@0.182.0, @mediapipe/tasks-vision@0.10.32, vite@7.3.1, typescript@5.9.3, vite-plugin-glsl@1.5.1
-- Safari-specific WebGL/MediaPipe behavior may need investigation in Phase 5
-- COOP/COEP headers may be needed if MediaPipe requires SharedArrayBuffer (not needed so far -- models loaded without issue)
-- Emotion weights may benefit from further tuning with more users in Phase 5
+None remaining.
 
 ## Session Continuity
 
 Last session: 2026-02-07
-Stopped at: 05-02-PLAN.md tasks 1-2 complete, awaiting checkpoint task 3
+Stopped at: All phases complete. Milestone ready for audit.
 Resume file: None

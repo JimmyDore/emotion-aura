@@ -45,11 +45,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Performance & Polish
 
-- [ ] **PRF-01**: Application maintains 30+ FPS with face detection, emotion classification, and particle rendering active
-- [ ] **PRF-02**: Application maintains 30+ FPS with hand detection added (via staggered ML inference)
-- [ ] **PRF-03**: Application works in Chrome, Firefox, and Safari (desktop)
-- [ ] **PRF-04**: UI is polished with clean layout, smooth animations, portfolio-worthy finish
-- [ ] **PRF-05**: All coordinate mappings are correct (mirrored webcam + MediaPipe landmarks align with particle positions)
+- [x] **PRF-01**: Application maintains 30+ FPS with face detection, emotion classification, and particle rendering active
+- [x] **PRF-02**: Application maintains 30+ FPS with hand detection added (via staggered ML inference)
+- [x] **PRF-03**: Application works in Chrome, Firefox, and Safari (desktop)
+- [x] **PRF-04**: UI is polished with clean layout, smooth animations, portfolio-worthy finish
+- [x] **PRF-05**: All coordinate mappings are correct (mirrored webcam + MediaPipe landmarks align with particle positions)
 
 ## v2 Requirements
 
@@ -109,11 +109,11 @@ Deferred to future release. Tracked but not in current roadmap.
 | GES-04 | Phase 4 | Removed |
 | GES-05 | Phase 4 | Complete |
 | GES-06 | Phase 4 | Complete |
-| PRF-01 | Phase 5 | Pending |
-| PRF-02 | Phase 5 | Pending |
-| PRF-03 | Phase 5 | Pending |
-| PRF-04 | Phase 5 | Pending |
-| PRF-05 | Phase 5 | Pending |
+| PRF-01 | Phase 5 | Complete |
+| PRF-02 | Phase 5 | Complete |
+| PRF-03 | Phase 5 | Complete |
+| PRF-04 | Phase 5 | Complete |
+| PRF-05 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 29 total
