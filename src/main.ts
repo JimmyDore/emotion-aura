@@ -270,16 +270,13 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
       const spawnRate = SPAWN_RATE_BASE * profile.spawnRateMultiplier * (0.3 + 0.7 * intensity);
       const particlesToSpawn = spawnRate * dt;
 
-      // Two spawn sources: left ear and right ear
-      const spawnSources = [facePoints.leftEar, facePoints.rightEar];
-
       // Fractional spawning: accumulate and spawn whole particles
       spawnAccumulator += particlesToSpawn;
       while (spawnAccumulator >= 1) {
         spawnAccumulator -= 1;
 
-        // Alternate between left and right ear
-        const source = spawnSources[Math.random() < 0.5 ? 0 : 1];
+        // Pick a random point on the face oval contour
+        const source = facePoints.getRandomSpawnPoint();
 
         // Direction: outward from face center through spawn point
         const dx = source.x - facePoints.center.x;
@@ -318,7 +315,7 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
         const size = PARTICLE_SIZE_BASE * profile.sizeMultiplier * (0.5 + Math.random() * 0.5) * (0.7 + intensity * 0.3);
         const lifetime = PARTICLE_LIFETIME_BASE * profile.lifetimeMultiplier * (0.8 + Math.random() * 0.4);
 
-        // Spawn at ear position with slight random offset
+        // Spawn at oval contour point with slight random offset
         const offsetX = (Math.random() - 0.5) * 0.1;
         const offsetY = (Math.random() - 0.5) * 0.1;
 

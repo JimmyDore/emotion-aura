@@ -2,10 +2,10 @@ import type { NormalizedLandmark } from '@mediapipe/tasks-vision';
 
 /**
  * Converts MediaPipe face landmarks to Three.js scene coordinates
- * for particle spawning.
+ * for particle spawning from the FACE_OVAL contour.
  *
- * Returns two spawn points (left ear, right ear) so particles emanate
- * from the sides of the face and flow outward — keeping the face visible.
+ * Returns spawn points around the full head outline so particles emanate
+ * outward like an aura — not just from ear landmarks.
  * Also returns the face center for spawn-center uniform.
  *
  * Coordinate conversion:
@@ -15,12 +15,10 @@ import type { NormalizedLandmark } from '@mediapipe/tasks-vision';
  */
 
 export interface FaceSpawnPoints {
-  /** Face center (nose tip) for spawn-center uniform. */
+  /** Face center for spawn-center uniform. */
   center: { x: number; y: number };
-  /** Left ear spawn point (viewer's left = subject's right). */
-  leftEar: { x: number; y: number };
-  /** Right ear spawn point (viewer's right = subject's left). */
-  rightEar: { x: number; y: number };
+  /** Get a random spawn point on the face oval contour. Call once per particle spawn. */
+  getRandomSpawnPoint: () => { x: number; y: number };
 }
 
 export class FaceLandmarkTracker {
@@ -28,19 +26,24 @@ export class FaceLandmarkTracker {
   private static readonly SMOOTH_ALPHA = 0.3;
 
   /**
-   * MediaPipe 478-point face mesh landmark indices:
-   *   1   = nose tip (face center)
-   *   234 = right ear tragion (subject's right = viewer's left after mirror)
-   *   454 = left ear tragion (subject's left = viewer's right after mirror)
+   * MediaPipe 478-point face mesh FACE_OVAL contour indices (36 points).
+   * Source: MediaPipe FACEMESH_FACE_OVAL (face_mesh_connections.py).
+   * These define the face outline perimeter for aura-style particle spawning.
    */
-  private static readonly NOSE_TIP = 1;
-  private static readonly RIGHT_EAR = 234;
-  private static readonly LEFT_EAR = 454;
+  private static readonly FACE_OVAL_INDICES = [
+    10, 338, 297, 332, 284, 251, 389, 356, 454, 323,
+    361, 288, 397, 365, 379, 378, 400, 377, 152, 148,
+    176, 149, 150, 136, 172, 58, 132, 93, 234, 127,
+    162, 21, 54, 103, 67, 109,
+  ] as const;
 
-  /** Smoothed positions in scene coordinates. Null if no prior data. */
+  /** Smoothed face center in scene coordinates. Null if no prior data. */
   private smoothedCenter: { x: number; y: number } | null = null;
-  private smoothedLeftEar: { x: number; y: number } | null = null;
-  private smoothedRightEar: { x: number; y: number } | null = null;
+
+  /** Smoothed oval landmark positions in scene coordinates (36 points). */
+  private smoothedOvalPoints: ({ x: number; y: number } | null)[] = new Array(
+    FaceLandmarkTracker.FACE_OVAL_INDICES.length,
+  ).fill(null);
 
   /**
    * Update with the latest face landmarks and return smoothed spawn points.
@@ -57,33 +60,59 @@ export class FaceLandmarkTracker {
       return null;
     }
 
-    const nose = faceLandmarks[FaceLandmarkTracker.NOSE_TIP];
-    const rEar = faceLandmarks[FaceLandmarkTracker.RIGHT_EAR];
-    const lEar = faceLandmarks[FaceLandmarkTracker.LEFT_EAR];
-    if (!nose || !rEar || !lEar) return null;
+    // Compute face center from the average of all FACE_OVAL landmarks
+    // (more stable than nose tip for halo effect centering)
+    let sumX = 0;
+    let sumY = 0;
+    let count = 0;
 
-    // Convert each landmark to scene coordinates
-    const center = this.toScene(nose, aspect);
-    const leftEar = this.toScene(lEar, aspect);
-    const rightEar = this.toScene(rEar, aspect);
+    for (let i = 0; i < FaceLandmarkTracker.FACE_OVAL_INDICES.length; i++) {
+      const idx = FaceLandmarkTracker.FACE_OVAL_INDICES[i];
+      const lm = faceLandmarks[idx];
+      if (!lm) continue;
 
-    // Apply EMA smoothing
-    this.smoothedCenter = this.smooth(this.smoothedCenter, center);
-    this.smoothedLeftEar = this.smooth(this.smoothedLeftEar, leftEar);
-    this.smoothedRightEar = this.smooth(this.smoothedRightEar, rightEar);
+      // Convert to scene coordinates and smooth each oval point individually
+      const raw = this.toScene(lm, aspect);
+      this.smoothedOvalPoints[i] = this.smooth(
+        this.smoothedOvalPoints[i],
+        raw,
+      );
+
+      sumX += this.smoothedOvalPoints[i]!.x;
+      sumY += this.smoothedOvalPoints[i]!.y;
+      count++;
+    }
+
+    if (count === 0) return null;
+
+    // Smooth the center
+    const rawCenter = { x: sumX / count, y: sumY / count };
+    this.smoothedCenter = this.smooth(this.smoothedCenter, rawCenter);
+
+    const center = { ...this.smoothedCenter };
+    const ovalPoints = this.smoothedOvalPoints;
 
     return {
-      center: { ...this.smoothedCenter },
-      leftEar: { ...this.smoothedLeftEar },
-      rightEar: { ...this.smoothedRightEar },
+      center,
+      getRandomSpawnPoint: (): { x: number; y: number } => {
+        // Pick a random FACE_OVAL landmark from the smoothed array
+        const randIdx = Math.floor(Math.random() * ovalPoints.length);
+        const point = ovalPoints[randIdx];
+        if (point) {
+          return { x: point.x, y: point.y };
+        }
+        // Fallback: return center if somehow the point isn't smoothed yet
+        return { x: center.x, y: center.y };
+      },
     };
   }
 
   /** Clear stored positions. Call when face is lost to reset smoothing. */
   reset(): void {
     this.smoothedCenter = null;
-    this.smoothedLeftEar = null;
-    this.smoothedRightEar = null;
+    this.smoothedOvalPoints = new Array(
+      FaceLandmarkTracker.FACE_OVAL_INDICES.length,
+    ).fill(null);
   }
 
   /** Convert a MediaPipe normalized landmark to orthographic scene coords. */
