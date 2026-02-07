@@ -17,6 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Particle System** - Organic GPU-driven particle system that reacts to detected emotions
 - [x] **Phase 4: Hand Gestures** - Hand tracking with gesture-based particle manipulation
 - [x] **Phase 5: Performance & Polish** - Cross-browser compatibility, performance tuning, and portfolio-quality finish
+- [ ] **Phase 6: Detection of the 2 Hands** - Two-hand tracking with independent gesture recognition per hand
 
 ## Phase Details
 
@@ -100,10 +101,24 @@ Plans:
 - [x] 05-01-PLAN.md -- Neon spark shader, FACE_OVAL head-outline spawn, webcam brightness fix, and color tuning
 - [x] 05-02-PLAN.md -- Silent quality scaler, cross-browser safety, toggle buttons, branding, and final verification
 
+### Phase 6: Detection of the 2 Hands
+**Goal**: Both hands are detected simultaneously with independent gesture recognition, enabling two-handed particle manipulation
+**Depends on**: Phase 5
+**Requirements**: TBD
+**Success Criteria** (what must be TRUE):
+  1. Both hands are detected and tracked simultaneously in real-time
+  2. Each hand independently recognizes gestures (push, attract) and applies forces from its own position
+  3. Two-handed interactions create visually distinct combined effects on the particle system
+  4. Performance remains at 30+ FPS with dual-hand tracking active alongside face/emotion detection
+**Plans**: 1 plan
+
+Plans:
+- [ ] 06-01-PLAN.md -- Dual-hand detection, per-hand gestures, dual auras, dual force fields, velocity cap, and L/R overlay
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -112,3 +127,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 3. Particle System | 3/3 | Complete | 2026-02-07 |
 | 4. Hand Gestures | 3/3 | Complete | 2026-02-07 |
 | 5. Performance & Polish | 2/2 | Complete | 2026-02-07 |
+| 6. Detection of the 2 Hands | 0/1 | Not Started | - |
