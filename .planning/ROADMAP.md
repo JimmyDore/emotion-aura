@@ -94,12 +94,11 @@ Plans:
   2. Application works correctly in Chrome, Firefox, and Safari on desktop
   3. UI has a polished, portfolio-worthy finish with clean layout and smooth animations
   4. All coordinate systems are correctly aligned -- mirrored webcam feed, MediaPipe landmarks, and particle positions all correspond spatially
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: Performance profiling and optimization (inference scheduling, GPU budget, resolution tuning)
-- [ ] 05-02: Cross-browser testing and fixes (Chrome, Firefox, Safari)
-- [ ] 05-03: UI polish, layout refinement, and final visual tuning
+- [ ] 05-01-PLAN.md -- Neon spark shader, FACE_OVAL head-outline spawn, webcam brightness fix, and color tuning
+- [ ] 05-02-PLAN.md -- Silent quality scaler, cross-browser safety, toggle buttons, branding, and final verification
 
 ## Progress
 
@@ -112,4 +111,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. Emotion Detection | 2/2 | Complete | 2026-02-06 |
 | 3. Particle System | 3/3 | Complete | 2026-02-07 |
 | 4. Hand Gestures | 3/3 | Complete | 2026-02-07 |
-| 5. Performance & Polish | 0/3 | Not started | - |
+| 5. Performance & Polish | 0/2 | Not started | - |
