@@ -87,6 +87,7 @@ Recent decisions affecting current work:
 - [Phase 5] Particle visual polish: larger glow radius for more ethereal look (less dot-like)
 - [Phase 5] Face exclusion zone: particles fade/avoid face area for cleaner look
 - [Phase 5] Color dominance: reduce neutral blending when strong emotion is detected
+- [Phase 5] Fix dark webcam feed: screen is way too dim, investigate compositing/overlay opacity
 
 ### Blockers/Concerns
 
