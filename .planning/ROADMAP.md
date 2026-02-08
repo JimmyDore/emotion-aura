@@ -1,6 +1,6 @@
 # Milestone v1.1: Eye Wink Interactions
 
-**Status:** IN PROGRESS
+**Status:** COMPLETE
 **Phases:** 6.1+
 **Total Plans:** 1
 
@@ -17,7 +17,7 @@ Extends the v1.0 Emotion Aura experience with eye-wink-triggered particle firewo
 **Plans:** 1 plan
 
 Plans:
-- [ ] 06.1-01-PLAN.md — WinkDetector + FireworkSpawner + main.ts integration (GOLD/CYAN, 150 particles, 250ms cooldown, blinks = double firework)
+- [x] 06.1-01-PLAN.md — WinkDetector + FireworkSpawner + main.ts integration (8-color palette, 150 particles, 250ms cooldown, blinks = double firework)
 
 **Details:**
 Leverage existing FaceLandmarker blendshapes (eyeBlinkLeft, eyeBlinkRight) to detect individual eye winks and blinks. Trigger dramatic firework bursts on the corresponding screen side:
@@ -37,7 +37,9 @@ Leverage existing FaceLandmarker blendshapes (eyeBlinkLeft, eyeBlinkRight) to de
 
 **Key Decisions:**
 
-(None yet)
+- 8-color rotating palette instead of fixed GOLD/CYAN per side (user feedback)
+- Randomized burst positions within screen halves (user feedback)
+- 15-20 second particle lifetime instead of 5-8s (user feedback)
 
 **Issues Resolved:**
 
