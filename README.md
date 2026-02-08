@@ -12,6 +12,7 @@ Real-time computer vision app that detects your facial emotions and hand gesture
 2. A **rule-based classifier** maps blendshape activations to 5 emotions using FACS (Facial Action Coding System) weighted formulas
 3. A **GPU particle system** (5,000 particles) renders a glowing aura around the face, with colors, motion, and intensity driven by the detected emotion
 4. **Hand gestures** create force fields -- open palm pushes particles away, closed fist attracts them
+5. **Eye winks** trigger celebratory firework bursts -- wink left or right eye to launch a radial particle explosion on the corresponding side of the screen
 
 ---
 
@@ -34,6 +35,14 @@ Real-time computer vision app that detects your facial emotions and hand gesture
   - Neutral: silver, gentle ambient float
 - **Face-anchored spawning** -- particles emit from the FACE_OVAL landmarks (head silhouette outline)
 - **Smooth transitions** -- profiles lerp and blend when emotions change
+
+### Eye Wink Fireworks
+- **Wink-triggered fireworks** -- close either eye to launch a radial burst of 150 particles on the corresponding side of the screen
+- **Rotating color palette** -- 8 vibrant colors (gold, cyan, hot pink, lime, purple, orange, mint, yellow) cycle through successive fireworks
+- **Random positioning** -- each burst spawns at a random position within its screen half for variety
+- **Long-lived particles** -- firework particles linger for 15-20 seconds, drifting gently after the initial burst
+- **Blink = double firework** -- closing both eyes fires two simultaneous bursts, one per side
+- **Per-eye cooldown** -- 250ms debounce per eye prevents rapid spam while allowing natural blink patterns
 
 ### Dual-Hand Gesture Interaction
 - **2-hand simultaneous tracking** -- each hand detected and classified independently
@@ -82,12 +91,14 @@ src/
 │   ├── HandDetector             # MediaPipe HandLandmarker wrapper (2-hand)
 │   ├── EmotionClassifier        # Blendshape → emotion (FACS rules)
 │   ├── GestureClassifier        # Hand landmarks → open/fist/none
+│   ├── WinkDetector             # Eye blink blendshapes → wink events (per-eye cooldown)
 │   └── ModelLoader              # Model download with progress callback
 ├── particles/
 │   ├── ParticleSystem           # Three.js Points mesh + custom ShaderMaterial
 │   ├── ParticlePool             # Ring buffer, per-frame physics update
 │   ├── EmotionProfile           # Color palettes & behavior configs per emotion
 │   ├── FaceLandmarkTracker      # FACE_OVAL spawn point extraction
+│   ├── FireworkSpawner          # Radial burst spawner with rotating color palette
 │   ├── QualityScaler            # Adaptive particle count based on FPS
 │   └── shaders/
 │       ├── particle.vert.glsl   # Simplex noise displacement, size scaling
@@ -124,6 +135,8 @@ float outer = exp(-dist * 1.5) * 0.15; // atmospheric glow
 ```
 
 **Staggered inference** is the key performance trick -- running both MediaPipe models every frame tanks FPS to ~20. By alternating face/hand detection across frames, each model runs at 30fps while rendering stays at 60fps. Users can't perceive the 33ms ML latency with smooth visual output.
+
+**Wink fireworks** reuse the existing particle system -- the `FireworkSpawner` injects 150 particles into the same pool with radial velocities and a rotating 8-color palette. Each eye has an independent 250ms cooldown, so natural blinks produce satisfying double bursts while rapid spam is filtered out. Particles linger 15-20 seconds with slow drift, creating a trail of fading color.
 
 **Gesture force fields** apply radial forces to every alive particle each frame. Both hands can act simultaneously -- you can push with one hand and attract with the other. A velocity cap prevents particles from accelerating infinitely under combined dual-hand forces.
 
