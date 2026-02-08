@@ -151,8 +151,12 @@ export const FIREWORK_LIFETIME_MAX = 8.0;
 export const FIREWORK_SIZE_MIN = 15;
 export const FIREWORK_SIZE_MAX = 45;
 
-/** How far toward screen edge to place burst origin (0.8 = 80%). */
-export const FIREWORK_SCREEN_X_FACTOR = 0.8;
+/** X position range within screen half (factor of aspect ratio). */
+export const FIREWORK_X_MIN_FACTOR = 0.2;
+export const FIREWORK_X_MAX_FACTOR = 0.9;
+
+/** Y position range (scene units, symmetric around center). */
+export const FIREWORK_Y_RANGE = 0.7;
 
 /** Per-channel color jitter for visual richness (+/- this value). */
 export const FIREWORK_COLOR_JITTER = 0.08;
@@ -160,8 +164,14 @@ export const FIREWORK_COLOR_JITTER = 0.08;
 /** Origin position jitter (scene units, +/- this value). Minimal -- single point origin. */
 export const FIREWORK_ORIGIN_JITTER = 0.02;
 
-/** GOLD color for LEFT wink fireworks [R, G, B]. */
-export const FIREWORK_COLOR_GOLD: [number, number, number] = [1.0, 0.84, 0.0];
-
-/** CYAN color for RIGHT wink fireworks [R, G, B]. */
-export const FIREWORK_COLOR_CYAN: [number, number, number] = [0.0, 0.9, 1.0];
+/** Firework color palette -- each wink cycles to the next color. */
+export const FIREWORK_COLOR_PALETTE: [number, number, number][] = [
+  [1.0, 0.84, 0.0],   // Gold
+  [0.0, 0.9, 1.0],    // Cyan
+  [1.0, 0.2, 0.6],    // Hot pink
+  [0.4, 1.0, 0.2],    // Lime
+  [0.6, 0.3, 1.0],    // Purple
+  [1.0, 0.5, 0.0],    // Orange
+  [0.0, 1.0, 0.7],    // Mint
+  [1.0, 0.95, 0.3],   // Yellow
+];

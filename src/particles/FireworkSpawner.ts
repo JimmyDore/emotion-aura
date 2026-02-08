@@ -6,23 +6,27 @@ import {
   FIREWORK_LIFETIME_MAX,
   FIREWORK_SIZE_MIN,
   FIREWORK_SIZE_MAX,
-  FIREWORK_SCREEN_X_FACTOR,
+  FIREWORK_X_MIN_FACTOR,
+  FIREWORK_X_MAX_FACTOR,
+  FIREWORK_Y_RANGE,
   FIREWORK_COLOR_JITTER,
   FIREWORK_ORIGIN_JITTER,
-  FIREWORK_COLOR_GOLD,
-  FIREWORK_COLOR_CYAN,
+  FIREWORK_COLOR_PALETTE,
 } from '../core/constants.ts';
 import { ParticleSystem } from './ParticleSystem.ts';
 import type { WinkSide } from '../core/types.ts';
 
+/** Rotating index into the color palette. */
+let colorIndex = 0;
+
 /**
  * Spawn a radial firework burst into the shared particle system.
  *
- * Particles expand outward from a single tight point with no gravity,
- * lingering and drifting for 5-8 seconds before fading.
+ * Each call picks the next color from the palette and a random position
+ * within the corresponding screen half.
  *
  * @param particleSystem - The shared ParticleSystem instance
- * @param side - Which screen side to place the burst ('left' = GOLD, 'right' = CYAN)
+ * @param side - Which screen half to place the burst ('left' or 'right')
  * @param aspect - Current viewport aspect ratio (width / height)
  */
 export function spawnFirework(
@@ -30,14 +34,18 @@ export function spawnFirework(
   side: WinkSide,
   aspect: number,
 ): void {
-  // Burst center X: left side = negative, right side = positive
+  // Random X within the screen half (between 20% and 90% of half-width)
+  const xFactor = FIREWORK_X_MIN_FACTOR + Math.random() * (FIREWORK_X_MAX_FACTOR - FIREWORK_X_MIN_FACTOR);
   const centerX = side === 'left'
-    ? -aspect * FIREWORK_SCREEN_X_FACTOR
-    : aspect * FIREWORK_SCREEN_X_FACTOR;
-  const centerY = 0;
+    ? -aspect * xFactor
+    : aspect * xFactor;
 
-  // Base color: GOLD for left, CYAN for right
-  const baseColor = side === 'left' ? FIREWORK_COLOR_GOLD : FIREWORK_COLOR_CYAN;
+  // Random Y within vertical range
+  const centerY = (Math.random() - 0.5) * FIREWORK_Y_RANGE * 2;
+
+  // Pick next color from rotating palette
+  const baseColor = FIREWORK_COLOR_PALETTE[colorIndex % FIREWORK_COLOR_PALETTE.length];
+  colorIndex++;
 
   for (let i = 0; i < FIREWORK_PARTICLE_COUNT; i++) {
     // Random radial direction
