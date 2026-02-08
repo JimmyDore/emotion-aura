@@ -144,8 +144,8 @@ export const FIREWORK_SPEED_MIN = 0.3;
 export const FIREWORK_SPEED_MAX = 0.8;
 
 /** Particle lifetime range (seconds) -- long linger and drift. */
-export const FIREWORK_LIFETIME_MIN = 5.0;
-export const FIREWORK_LIFETIME_MAX = 8.0;
+export const FIREWORK_LIFETIME_MIN = 15.0;
+export const FIREWORK_LIFETIME_MAX = 20.0;
 
 /** Particle size range (pixels, before pixel ratio scaling). */
 export const FIREWORK_SIZE_MIN = 15;
