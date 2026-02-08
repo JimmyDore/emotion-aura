@@ -19,6 +19,8 @@ import { blendProfiles } from './particles/EmotionProfile.ts';
 import { classifyGesture, getPalmCenter } from './ml/GestureClassifier.ts';
 import { GestureState } from './state/GestureState.ts';
 import { GestureOverlay } from './ui/GestureOverlay.ts';
+import { WinkDetector } from './ml/WinkDetector.ts';
+import { spawnFirework } from './particles/FireworkSpawner.ts';
 import { WASM_CDN, SPAWN_RATE_BASE, PARTICLE_SIZE_BASE, PARTICLE_LIFETIME_BASE, GESTURE_INFLUENCE_PX, FORCE_PUSH_STRENGTH, FORCE_ATTRACT_STRENGTH } from './core/constants.ts';
 import type { CameraError, GestureType } from './core/types.ts';
 import type { NormalizedLandmark } from '@mediapipe/tasks-vision';
@@ -42,6 +44,7 @@ let particleSystem: ParticleSystem | null = null;
 let qualityScaler: QualityScaler | null = null;
 let gestureOverlay: GestureOverlay | null = null;
 let handAuras: Map<string, HTMLDivElement> | null = null;
+const winkDetector = new WinkDetector();
 let statsInstance: { dom: HTMLElement; begin: () => void; end: () => void } | null = null;
 let brandingEl: HTMLDivElement | null = null;
 let statsToggleEl: HTMLButtonElement | null = null;
@@ -290,6 +293,15 @@ async function loadAndConnect(app: HTMLElement): Promise<void> {
             const rawScores = emotionClassifier.classify(result.faceBlendshapes[0].categories);
             emotionState.update(rawScores);
             lastFaceLandmarks = result.faceLandmarks?.[0];
+
+            // Wink/blink detection -> firework burst(s)
+            const winkEvents = winkDetector.update(
+              result.faceBlendshapes[0].categories,
+              performance.now(),
+            );
+            for (const event of winkEvents) {
+              spawnFirework(particleSystem!, event.side, aspect);
+            }
           } else {
             // Face lost -- check if ANY hand is active (occlusion heuristic)
             let anyHandActive = false;
