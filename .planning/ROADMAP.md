@@ -12,18 +12,20 @@ Extends the v1.0 Emotion Aura experience with eye-wink-triggered particle firewo
 
 ### Phase 6.1: Eye Wink Firework Particles (INSERTED)
 
-**Goal:** Detect individual eye closures (winks) and trigger spectacular firework particle bursts — right eye closed = blue firework on the right side of the screen, left eye closed = red firework on the left side of the screen
+**Goal:** Detect individual eye winks AND blinks via blendshapes and trigger spectacular firework particle bursts — left eye closed = GOLD firework on the left side, right eye closed = CYAN firework on the right side, blink = DOUBLE firework on both sides
 **Depends on:** Phase 6 (v1.0 complete)
 **Plans:** 1 plan
 
 Plans:
-- [ ] 06.1-01-PLAN.md -- WinkDetector + FireworkSpawner + main.ts integration
+- [ ] 06.1-01-PLAN.md — WinkDetector + FireworkSpawner + main.ts integration (GOLD/CYAN, 150 particles, 250ms cooldown, blinks = double firework)
 
 **Details:**
-Leverage existing FaceLandmarker blendshapes (eyeBlinkLeft, eyeBlinkRight) to detect individual eye closures. When a wink is detected, spawn a dramatic firework burst of particles on the corresponding screen side:
-- Right eye closed → blue particle firework explosion on the RIGHT side of the screen
-- Left eye closed → red particle firework explosion on the LEFT side of the screen
-- Both visual effects should be spectacular "firework" style — rapid burst, spread, and fade
+Leverage existing FaceLandmarker blendshapes (eyeBlinkLeft, eyeBlinkRight) to detect individual eye winks and blinks. Trigger dramatic firework bursts on the corresponding screen side:
+- Left eye closed → GOLD particle firework on the LEFT side of the screen
+- Right eye closed → CYAN particle firework on the RIGHT side of the screen
+- Both eyes closed (blink) → DOUBLE firework (GOLD left + CYAN right simultaneously)
+- 150 particles per burst, 5-8 second lifetime, weightless radial expansion, 250ms rapid-fire cooldown
+- Shared ParticlePool — hand gestures automatically affect firework particles
 
 ---
 
