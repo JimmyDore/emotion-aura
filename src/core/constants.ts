@@ -127,3 +127,41 @@ export const GESTURE_INFLUENCE_PX = 300;
 /** Force field strengths (scene units/sec^2). Tunable. */
 export const FORCE_PUSH_STRENGTH = 50.0;
 export const FORCE_ATTRACT_STRENGTH = 30.0;
+
+// ── Wink Detection ───────────────────────────────────────────────────
+/** Eye blink score threshold -- above this = eye closed. Requires deliberate closure. */
+export const WINK_THRESHOLD = 0.5;
+
+/** Milliseconds cooldown between firework triggers PER SIDE (independent timers). */
+export const WINK_COOLDOWN_MS = 250;
+
+// ── Firework Particles ────────────────────────────────────────────────
+/** Particles per firework burst. */
+export const FIREWORK_PARTICLE_COUNT = 150;
+
+/** Radial velocity range (scene units/sec). */
+export const FIREWORK_SPEED_MIN = 0.3;
+export const FIREWORK_SPEED_MAX = 0.8;
+
+/** Particle lifetime range (seconds) -- long linger and drift. */
+export const FIREWORK_LIFETIME_MIN = 5.0;
+export const FIREWORK_LIFETIME_MAX = 8.0;
+
+/** Particle size range (pixels, before pixel ratio scaling). */
+export const FIREWORK_SIZE_MIN = 15;
+export const FIREWORK_SIZE_MAX = 45;
+
+/** How far toward screen edge to place burst origin (0.8 = 80%). */
+export const FIREWORK_SCREEN_X_FACTOR = 0.8;
+
+/** Per-channel color jitter for visual richness (+/- this value). */
+export const FIREWORK_COLOR_JITTER = 0.08;
+
+/** Origin position jitter (scene units, +/- this value). Minimal -- single point origin. */
+export const FIREWORK_ORIGIN_JITTER = 0.02;
+
+/** GOLD color for LEFT wink fireworks [R, G, B]. */
+export const FIREWORK_COLOR_GOLD: [number, number, number] = [1.0, 0.84, 0.0];
+
+/** CYAN color for RIGHT wink fireworks [R, G, B]. */
+export const FIREWORK_COLOR_CYAN: [number, number, number] = [0.0, 0.9, 1.0];

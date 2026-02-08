@@ -55,3 +55,12 @@ export interface GestureResult {
   strength: number;      // 0-1, used for decay when hand leaves frame
   handPosition: { x: number; y: number } | null;  // scene coordinates, null if no hand
 }
+
+/** Which side of the screen a wink firework targets. */
+export type WinkSide = 'left' | 'right';
+
+/** A detected wink or blink event with side and timestamp. */
+export interface WinkEvent {
+  side: WinkSide;
+  timestamp: number;
+}
